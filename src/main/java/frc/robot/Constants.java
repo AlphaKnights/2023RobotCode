@@ -24,13 +24,13 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static final class DriveConstants {
+  public static class DriveConstants {//TODO: Convert class to final once constants are tuned
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 4.8;
+    public static final double kMaxSpeedMetersPerSecond = 4.8;//TODO: get velocity working with the falcon 500
     public static final double kMaxAngularSpeed = .25 * Math.PI; // radians per second
 
-
+    //slew containts to add motion curve
     public static final double kDirectionSlewRate = 1.2; // radians per second
     public static final double kMagnitudeSlewRate = 1.8; // percent per second (1 = 100%)
     public static final double kRotationalSlewRate = 2.0; 
@@ -46,16 +46,30 @@ public final class Constants {
         new Translation2d(-kWheelBase / 2, kTrackWidth / 2));
 
     // Angular offsets of the modules relative to the chassis in degrees 
-    public static final double kFrontLeftChassisAngularOffsetDegrees = 0;
-    public static final double kFrontRightChassisAngularOffsetDegrees = 0;
-    public static final double kBackLeftChassisAngularOffsetDegrees = -90;
-    public static final double kBackRightChassisAngularOffsetDegrees = -30;
+    
+    //TODO: Temporary comment out till constants are tuned, once tuned insert values and uncomment below:
+
+    // public static final double kFrontLeftChassisAngularOffsetDegrees = 0;
+    // public static final double kFrontRightChassisAngularOffsetDegrees = 0;
+    // public static final double kBackLeftChassisAngularOffsetDegrees = -90;
+    // public static final double kBackRightChassisAngularOffsetDegrees = -30;
+
+    // // Angular offsets of the modules relative to the chassis in radians
+    // public static final double kFrontLeftChassisAngularOffset = kFrontLeftChassisAngularOffsetDegrees*(Math.PI/180);
+    // public static final double kFrontRightChassisAngularOffset = kFrontRightChassisAngularOffsetDegrees*(Math.PI/180);
+    // public static final double kBackLeftChassisAngularOffset = kBackLeftChassisAngularOffsetDegrees*(Math.PI/180);
+    // public static final double kBackRightChassisAngularOffset = kBackRightChassisAngularOffsetDegrees*(Math.PI/180);
+
+    public static double kFrontLeftChassisAngularOffsetDegrees = 0;
+    public static double kFrontRightChassisAngularOffsetDegrees = 0;
+    public static double kBackLeftChassisAngularOffsetDegrees = -90;
+    public static double kBackRightChassisAngularOffsetDegrees = -30;
 
     // Angular offsets of the modules relative to the chassis in radians
-    public static final double kFrontLeftChassisAngularOffset = kFrontLeftChassisAngularOffsetDegrees*(180/Math.PI);
-    public static final double kFrontRightChassisAngularOffset = kFrontRightChassisAngularOffsetDegrees*(180/Math.PI);
-    public static final double kBackLeftChassisAngularOffset = kBackLeftChassisAngularOffsetDegrees*(180/Math.PI);
-    public static final double kBackRightChassisAngularOffset = kBackRightChassisAngularOffsetDegrees*(180/Math.PI);
+    public static double kFrontLeftChassisAngularOffset = kFrontLeftChassisAngularOffsetDegrees*(Math.PI/180);
+    public static double kFrontRightChassisAngularOffset = kFrontRightChassisAngularOffsetDegrees*(Math.PI/180);
+    public static double kBackLeftChassisAngularOffset = kBackLeftChassisAngularOffsetDegrees*(Math.PI/180);
+    public static double kBackRightChassisAngularOffset = kBackRightChassisAngularOffsetDegrees*(Math.PI/180);
 
     // SPARK MAX CAN IDs
     public static final int kFrontLeftDrivingCanId = 6;
@@ -68,7 +82,7 @@ public final class Constants {
     public static final int kFrontRightTurningCanId = 9;
     public static final int kRearRightTurningCanId = 12;
 
-    public static final boolean kGyroReversed = false;
+    public static final boolean kGyroReversed = true;
   }
 
   public static final class PIDConstants{
@@ -139,6 +153,8 @@ public final class Constants {
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
     public static final double kDriveDeadband = 0.05;
+    public static final int kNavXZeroButton = 0;
+    public static final int kResetEncodersButton = 1;
   }
 
   public static final class AutoConstants {

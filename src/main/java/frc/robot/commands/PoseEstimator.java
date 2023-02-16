@@ -25,12 +25,12 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
-public class Vision extends CommandBase {
+public class PoseEstimator extends CommandBase {
     private PhotonCamera photonCamera;
     private PhotonPoseEstimator photonPoseEstimator;
 
     /** Creates a new Vision command object **/
-    public Vision() {
+    public PoseEstimator() {
         // Initialize PhotonVision Camera
         // gettings data from a PhotonCamera - have not completed
         // https://docs.photonvision.org/en/latest/docs/programming/photonlib/getting-target-data.html#constructing-a-photoncamera
@@ -57,3 +57,22 @@ public class Vision extends CommandBase {
         return photonPoseEstimator.update();
     }
 }
+
+/* Thanks Commodors - This should go in a Swerve class (when it is created)
+    public void updateOdometry(){
+        poseEstimator.update(getYaw(), getModulePositions());
+
+        Optional<EstimatedRobotPose> result = photonPose.getEstimatedGlobalPose(poseEstimator.getEstimatedPosition());
+
+        if (result.isPresent()) {
+            EstimatedRobotPose camPose = result.get();
+            poseEstimator.addVisionMeasurement(camPose.estimatedPose.toPose2d(), camPose.timestampSeconds);
+            field.getObject("Estimated Vision Position").setPose(camPose.estimatedPose.toPose2d());
+        } else {
+            field.getObject("Estimated Vision Position").setPose(new Pose2d(-100, -100, new Rotation2d()));
+        }
+
+        field.getObject("Actual Pos").setPose(getPose());
+        field.setRobotPose(poseEstimator.getEstimatedPosition());
+    }
+*/

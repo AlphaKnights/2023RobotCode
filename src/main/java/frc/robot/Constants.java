@@ -24,6 +24,20 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static final class OIConstants {
+    //PSP Controller
+    public static final int kDriverControllerPort = 0;
+    public static final double kDriveDeadband = 0.05;
+    public static final int kNavXZeroButton = 1;
+    public static final int kResetEncodersButton = 2;
+    //Left Flight Stick
+    public static final int kLeftJoystickControllerPort = 0;
+    public static final double kLeftJoystickDeadband = 0.05;
+    //Right Flight Stick
+    public static final int kRightJoystickControllerPort = 0;
+    public static final double kRightJoystickDeadband = 0.05;
+  }
+
   public static class DriveConstants {//TODO: Convert class to final once constants are tuned
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
@@ -83,6 +97,26 @@ public final class Constants {
     public static final int kRearRightTurningCanId = 12;
 
     public static final boolean kGyroReversed = true;
+  }
+
+  public static final class ElevatorConstants{
+    public static final double kSensorCountPerRevolution = 2048;
+    public static final double kMaxFowardVerticalRotation = 5;// Up
+    public static final double kMaxReverseVerticalRotation = 0; //Down, set to 0 as it starts in the fully down state so it starts in pos 0
+    public static final double kFowardVerticalCount = kMaxFowardVerticalRotation*kSensorCountPerRevolution;
+    public static final double kReverseVerticalCount = kMaxReverseVerticalRotation*kSensorCountPerRevolution;
+    public static final int kElevatorFalconID = 0;
+    public static final int kLimitSwitchPort = 0;
+  }
+
+  public static final class ArmConstants{
+    public static final double kSensorCountPerRevolution = 2048;
+    public static final double kMaxFowardRotation = 5;// Out
+    public static final double kMaxReverseRotation = 0; //In, starts fully in so it starts in pos 0
+    public static final double kFowardRotationCount = kMaxFowardRotation*kSensorCountPerRevolution;
+    public static final double kReverseRotationCount = kMaxReverseRotation*kSensorCountPerRevolution;
+    public static final int kArmFalconID = 0;
+    public static final int kLimitSwitchPort = 0;
   }
 
   public static final class PIDConstants{
@@ -148,13 +182,6 @@ public final class Constants {
 
     public static final int kDrivingMotorCurrentLimit = 50; // amps
     public static final int kTurningMotorCurrentLimit = 20; // amps
-  }
-
-  public static final class OIConstants {
-    public static final int kDriverControllerPort = 0;
-    public static final double kDriveDeadband = 0.05;
-    public static final int kNavXZeroButton = 0;
-    public static final int kResetEncodersButton = 1;
   }
 
   public static final class AutoConstants {

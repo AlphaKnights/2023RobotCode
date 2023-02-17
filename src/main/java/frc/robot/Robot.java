@@ -4,11 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.networktables.DoubleEntry;
-import edu.wpi.first.networktables.DoubleTopic;
-import edu.wpi.first.networktables.IntegerEntry;
-import edu.wpi.first.networktables.IntegerTopic;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -23,14 +18,6 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-  //Setting up network table under the datatable "Swerve"
-  NetworkTableInstance inst = NetworkTableInstance.getDefault();
-  IntegerTopic swerveTopic = inst.getIntegerTopic("/datatable/Swerve");
-  //Entries that contain the Turning offset amount in degrees on shuffleboard
-  IntegerEntry swerveBackLeftTurningTuneEntry = swerveTopic.getEntryEx("BackLeft", 0);
-  IntegerEntry swerveBackRightTurningTuneEntry = swerveTopic.getEntryEx("BackRight", 0);
-  IntegerEntry swerveFrontLeftTurningTuneEntry = swerveTopic.getEntryEx("FrontLeft", 0);
-  IntegerEntry swerveFrontRightTurningTuneEntry = swerveTopic.getEntryEx("FrontRight", 0);
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -111,10 +98,5 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    //Gets the network table values and sets the offset to the value in the network table. You can find these variables in shuffleboard
-    Constants.DriveConstants.kBackLeftChassisAngularOffsetDegrees = swerveBackLeftTurningTuneEntry.get();
-    Constants.DriveConstants.kBackRightChassisAngularOffsetDegrees = swerveBackRightTurningTuneEntry.get();
-    Constants.DriveConstants.kFrontLeftChassisAngularOffsetDegrees = swerveFrontLeftTurningTuneEntry.get();
-    Constants.DriveConstants.kFrontRightChassisAngularOffsetDegrees = swerveFrontRightTurningTuneEntry.get();
   }
 }

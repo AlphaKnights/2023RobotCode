@@ -47,8 +47,8 @@ public class RobotContainer {
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
     JoystickButton m_zeroButton = new JoystickButton(m_driverController, OIConstants.kNavXZeroButton);
   // The operator's controller - operator controls movement of the arm and elevator
-  Joystick m_operatorLeftJoystick = new Joystick(OIConstants.kLeftJoystickControllerPort);//
-  Joystick m_operatorRightJoystick = new Joystick(OIConstants.kRightJoystickControllerPort);
+  Joystick m_operatorLeftJoystick = new Joystick(OIConstants.kLeftJoystickControllerPort);//Arm
+  Joystick m_operatorRightJoystick = new Joystick(OIConstants.kRightJoystickControllerPort);//Elevator
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */

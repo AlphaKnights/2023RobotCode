@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorSubsystem extends SubsystemBase {
+  //Config the falcon and the limit switches
   TalonFX elevatorFalcon = new TalonFX(ElevatorConstants.kElevatorFalconID);
   TalonFXConfiguration armConfig = new TalonFXConfiguration();
   DigitalInput reverseLimit = new DigitalInput(ElevatorConstants.kLimitSwitchPort);
@@ -32,6 +33,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
+  /**
+   * 
+   * @param Power the power to set the arm to, between -1 and 1. It will refuse to move in the reverse direction if the limit switch is pressed.
+   */
   public void setPower(double Power) {
     if (reverseLimit.get()) {
       elevatorFalcon.set(ControlMode.PercentOutput, 0);
@@ -41,6 +46,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
   }
 
+  /**
+   * 
+   * @param position the position to move the arm to, in encoder counts.
+   */
   public void goToPosition(double position) {
     if(reverseLimit.get()){
       elevatorFalcon.setSelectedSensorPosition(ElevatorConstants.kReverseVerticalCount);

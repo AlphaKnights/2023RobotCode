@@ -36,6 +36,11 @@ public final class Constants {
     //Right Flight Stick
     public static final int kRightJoystickControllerPort = 0;
     public static final double kRightJoystickDeadband = 0.05;
+    public static final int toggleCompressorButton = 2; // Thumb Button
+    public static final int clawShutButton = 1; // Trigger Button
+    public static final int clawHalfShutButton = 3; // Button 3
+    public static final int clawOpenButton = 4; // Button 4
+    public static final int clawOffButton = 6; // Button 4
   }
 
   public static class DriveConstants {//TODO: Convert class to final once constants are tuned
@@ -117,6 +122,22 @@ public final class Constants {
     public static final double kReverseRotationCount = kMaxReverseRotation*kSensorCountPerRevolution;
     public static final int kArmFalconID = 0;
     public static final int kLimitSwitchPort = 0;
+  }
+
+  public static final class ClawConstants{
+    public static final int kRevPneumaticPort = 2;
+    public static final int kPiston1FwdPort = 0;
+    public static final int kPiston1RevPort = 1;
+    public static final int kPiston2FwdPort = 2;
+    public static final int kPiston2RevPort = 3;
+    public static final double kClawMinPressure = 40;
+    public static final double kClawMaxPressure = 50;
+  }
+
+  
+
+  public static enum PistonState {
+    OPEN, HALF, CLOSED, OFF
   }
 
   public static final class PIDConstants{

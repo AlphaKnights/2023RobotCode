@@ -5,19 +5,22 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.Constants.PistonState;
+import frc.robot.subsystems.ClawSubsystem;
 
-public class ResetEncoders extends InstantCommand {
-  DriveSubsystem driveSubsystem;
-  /** Creates a new ResetEncoders. */
-  public ResetEncoders() {
+public class ChangePistonState extends InstantCommand {
+  ClawSubsystem clawSubsystem;
+  PistonState state;
+  /** Creates a new ChangePistionState. */
+  public ChangePistonState(PistonState newState, ClawSubsystem _clawSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(driveSubsystem);
+    state = newState;
+    clawSubsystem = _clawSubsystem;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    driveSubsystem.resetEncoders();
+    clawSubsystem.setPistonState(state);
   }
 }

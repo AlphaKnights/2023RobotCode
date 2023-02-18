@@ -39,7 +39,9 @@ public class ElevatorSubsystem extends SubsystemBase {
    */
   public void setPower(double p_power) {
     if (reverseLimit.get()) {
-      elevatorFalcon.set(ControlMode.PercentOutput, 0);
+      if(p_power<0){
+        elevatorFalcon.set(ControlMode.PercentOutput, 0);
+      }
       elevatorFalcon.setSelectedSensorPosition(ElevatorConstants.kReverseVerticalCount);
     } else {
       elevatorFalcon.set(ControlMode.PercentOutput, p_power);

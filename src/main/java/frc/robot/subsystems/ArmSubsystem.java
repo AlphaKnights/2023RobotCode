@@ -41,6 +41,9 @@ public class ArmSubsystem extends SubsystemBase {
   public void setPower(double p_power) {
     //Checks the limit switch and if triggered, sets the encoder to the reverse limit to the reverse limit and stops the motor
     if (reverseLimit.get()) {
+      if(p_power<0){
+        armFalcon.set(ControlMode.PercentOutput, 0);
+      }
       armFalcon.set(ControlMode.PercentOutput, 0);
       armFalcon.setSelectedSensorPosition(ArmConstants.kReverseRotationCount);
     } else {

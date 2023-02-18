@@ -72,14 +72,14 @@ public class RobotContainer {
     configureButtonBindings();
     // Configure all commands based on button pressed
     // Xbox controller button for zero'ing the NavX
-    m_zeroButton.onTrue(m_zeroCommand);
+    m_zeroButton.onFalse(m_zeroCommand);//Triggers when the button is released
     // Xbox controller button for holding the current position
-    m_holdPosition.whileTrue(m_holdPositionCommand);
+    m_holdPosition.whileTrue(m_holdPositionCommand);//Runs while the button is pressed
     //Button for claw piston states based on the Operator's Joystick
-    m_halfClawButton.onTrue(m_halfClawStateCommand);
-    m_fullClawButton.onTrue(m_openClawStateCommand);
-    m_closeClawButton.onTrue(m_closeClawStateCommand);
-    m_offClawButton.onTrue(m_offClawStateCommand);
+    m_halfClawButton.onTrue(m_halfClawStateCommand);//Triggers when the button is pressed
+    m_fullClawButton.onTrue(m_openClawStateCommand);//Triggers when the button is pressed
+    m_closeClawButton.onTrue(m_closeClawStateCommand);//Triggers when the button is pressed
+    m_offClawButton.onTrue(m_offClawStateCommand);//Triggers when the button is pressed
     // Configure default commands
     m_elevatorSubsystem.setDefaultCommand(new RunCommand(() -> m_elevatorSubsystem.setPower(m_operatorRightJoystick.getY()*m_operatorRightJoystick.getThrottle())));
     m_armSubsystem.setDefaultCommand(new RunCommand(() -> m_armSubsystem.setPower(m_operatorLeftJoystick.getY()*m_operatorLeftJoystick.getThrottle())));

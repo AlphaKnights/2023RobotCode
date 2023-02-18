@@ -32,10 +32,10 @@ public final class Constants {
     public static final int kResetEncodersButton = 2;
     public static final int kHoldPositionButton = 3;
     //Left Flight Stick
-    public static final int kLeftJoystickControllerPort = 0; // Default port for the left flight joystick
+    public static final int kLeftJoystickControllerPort = 1; // Default port for the left flight joystick
     public static final double kLeftJoystickDeadband = 0.05; // Deadband for the left flight joystick
     //Right Flight Stick
-    public static final int kRightJoystickControllerPort = 1; // Default port for the right flight joystick
+    public static final int kRightJoystickControllerPort = 2; // Default port for the right flight joystick
     public static final double kRightJoystickDeadband = 0.05; // Deadband for the right flight joystick
     public static final int toggleCompressorButton = 2; // Thumb Button
     public static final int clawShutButton = 1; // Trigger Button
@@ -229,17 +229,82 @@ public final class Constants {
 
 /*
  * Can IDs:
- * 0: PDP
- * 1:
- * 2: Rev PH
- * 3: Arm Falcon 500
- * 4: Elevator Falcon 500
- * 5: Front Right Swerve Steering Neo 550
- * 6: Front Left Swerve Steering Neo 550
- * 7: Back Right Swerve Steering Neo 550
- * 8: Back Left Swerve Steering Neo 550
- * 9: Front Right Swerve Drive Neo v1.1
- * 10: Front Left Swerve Drive Neo v1.1
- * 11: Back Right Swerve Drive Neo v1.1
- * 12: Back Left Swerve Drive Neo v1.1
+ *  0: PDP
+ *  1:
+ *  2: Rev PH
+ *  3: Arm Falcon 500
+ *  4: Elevator Falcon 500
+ *  5: Front Right Swerve Steering Neo 550
+ *  6: Front Left Swerve Steering Neo 550
+ *  7: Back Right Swerve Steering Neo 550
+ *  8: Back Left Swerve Steering Neo 550
+ *  9: Front Right Swerve Drive Neo v1.1
+ *  10: Front Left Swerve Drive Neo v1.1
+ *  11: Back Right Swerve Drive Neo v1.1
+ *  12: Back Left Swerve Drive Neo v1.1
+ * 
+ * Controllers:
+ *  PSP: 0: Driver:
+ *   Axis:
+ *    1: LJX:Swerve Left/Right
+ *    2: LJY:Swerve Forward/Backward
+ *    3: RJX:Swerve Rotate
+ *    4: RJY:
+ *    5: X-Hat:
+ *    6: Y-Hat:
+ *   Buttons:
+ *    1: X: Zero NavX
+ *    2: A: Reset Encoders
+ *    3: B: Hold Position(X Pattern)
+ *    4: Y:
+ *    5: RB:
+ *    6: LB:
+ *    7: RT:
+ *    8: LT:
+ *    9: Back:
+ *    10: Start: 
+ *    11: LJ Click:
+ *    12: RJ Click:
+ *  Left Flight Stick: 1: Operator
+ *   Axis:
+ *    1: X: 
+ *    2: Y: Elevator Up/Down
+ *    3: Z(Twist): 
+ *    4: Throttle:
+ *    5: X-Hat:
+ *    6: Y-Hat:
+ *   Buttons:
+ *    1: Trigger:
+ *    2: Thumb Button:
+ *    3: Back Left: 
+ *    4: Back Right:
+ *    5: Front Left:
+ *    6: Front Right:
+ *    7: Button 7:
+ *    8: Button 8:
+ *    9: Button 9:
+ *    10: Button 10:
+ *    11: Button 11:
+ *    12: Button 12:
+ *  Right Flight Stick: 2: Operator
+ *   Axis:
+ *    1: X: 
+ *    2: Y: Arm In/Out
+ *    3: Z(Twist): 
+ *    4: Throttle:
+ *    5: X-Hat:
+ *    6: Y-Hat:
+ *   Buttons:
+ *    1: Trigger: Claw Fully Shut
+ *    2: Thumb Button: Toggle Compressor
+ *    3: Back Left: Claw Half Shut
+ *    4: Back Right: Claw Open
+ *    5: Front Left: Claw Pneumatics Off
+ *    6: Front Right:
+ *    7: Button 7:
+ *    8: Button 8:
+ *    9: Button 9:
+ *    10: Button 10:
+ *    11: Button 11:
+ *    12: Button 12:
  */

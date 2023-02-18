@@ -21,6 +21,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.PistonState;
 import frc.robot.commands.ChangePistonState;
+import frc.robot.commands.HoldPosition;
 import frc.robot.commands.NavXZeroCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
@@ -50,16 +51,18 @@ public class RobotContainer {
   private final ChangePistonState m_offClawStateCommand = new ChangePistonState(PistonState.OFF, m_clawSubsystem);
   private final ChangePistonState m_openClawStateCommand = new ChangePistonState(PistonState.OPEN, m_clawSubsystem);
   private final ChangePistonState m_closeClawStateCommand = new ChangePistonState(PistonState.CLOSED, m_clawSubsystem);
+  private final HoldPosition m_holdPositionCommand = new HoldPosition();
 
   // The driver's controller - driver drives the robot
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
     JoystickButton m_zeroButton = new JoystickButton(m_driverController, OIConstants.kNavXZeroButton);
+    JoystickButton m_holdPosition = new JoystickButton(m_driverController, OIConstants.kHoldPositionButton);
   // The operator's controller - operator controls movement of the arm and elevator
   Joystick m_operatorLeftJoystick = new Joystick(OIConstants.kLeftJoystickControllerPort);//Arm
-  JoystickButton m_halfClawButton = new JoystickButton(m_driverController, OIConstants.clawHalfShutButton);
-  JoystickButton m_fullClawButton = new JoystickButton(m_driverController, OIConstants.clawOpenButton);
-  JoystickButton m_closeClawButton = new JoystickButton(m_driverController, OIConstants.clawShutButton);
-  JoystickButton m_offClawButton = new JoystickButton(m_driverController, OIConstants.clawOffButton);
+  JoystickButton m_halfClawButton = new JoystickButton(m_driverController, OIConstants.clawHalfShutButton);//Button for half open claw
+  JoystickButton m_fullClawButton = new JoystickButton(m_driverController, OIConstants.clawOpenButton);//Button for full open claw
+  JoystickButton m_closeClawButton = new JoystickButton(m_driverController, OIConstants.clawShutButton);//Button for full closed claw
+  JoystickButton m_offClawButton = new JoystickButton(m_driverController, OIConstants.clawOffButton);//Button for claw off, basically turns of the solonoids for the claw
   Joystick m_operatorRightJoystick = new Joystick(OIConstants.kRightJoystickControllerPort);//Elevator
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -67,7 +70,12 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+    // Configure all commands based on button pressed
+    // Xbox controller button for zero'ing the NavX
     m_zeroButton.onTrue(m_zeroCommand);
+    // Xbox controller button for holding the current position
+    m_holdPosition.whileTrue(m_holdPositionCommand);
+    //Button for claw piston states based on the Operator's Joystick
     m_halfClawButton.onTrue(m_halfClawStateCommand);
     m_fullClawButton.onTrue(m_openClawStateCommand);
     m_closeClawButton.onTrue(m_closeClawStateCommand);

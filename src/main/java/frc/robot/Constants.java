@@ -111,7 +111,7 @@ public final class Constants {
     public static final double kMaxReverseVerticalRotation = 0; //Down, set to 0 as it starts in the fully down state so it starts in pos 0
     public static final double kFowardVerticalCount = kMaxFowardVerticalRotation*kSensorCountPerRevolution;
     public static final double kReverseVerticalCount = kMaxReverseVerticalRotation*kSensorCountPerRevolution;
-    public static final int kElevatorFalconID = 0;
+    public static final int kElevatorFalconID = 3;
     public static final int kLimitSwitchPort = 0;
   }
 
@@ -121,8 +121,8 @@ public final class Constants {
     public static final double kMaxReverseRotation = 0; //In, starts fully in so it starts in pos 0
     public static final double kFowardRotationCount = kMaxFowardRotation*kSensorCountPerRevolution;
     public static final double kReverseRotationCount = kMaxReverseRotation*kSensorCountPerRevolution;
-    public static final int kArmFalconID = 0;
-    public static final int kLimitSwitchPort = 0;
+    public static final int kArmFalconID = 4;
+    public static final int kLimitSwitchPort = 1;
   }
 
   public static final class ClawConstants{
@@ -225,3 +225,21 @@ public final class Constants {
     public static final double kFreeSpeedRpm = 5676;
   }
 }
+
+
+/*
+ * Can IDs:
+ * 0: PDP
+ * 1:
+ * 2: Rev PH
+ * 3: Arm Falcon 500
+ * 4: Elevator Falcon 500
+ * 5: Front Right Swerve Steering Neo 550
+ * 6: Front Left Swerve Steering Neo 550
+ * 7: Back Right Swerve Steering Neo 550
+ * 8: Back Left Swerve Steering Neo 550
+ * 9: Front Right Swerve Drive Neo v1.1
+ * 10: Front Left Swerve Drive Neo v1.1
+ * 11: Back Right Swerve Drive Neo v1.1
+ * 12: Back Left Swerve Drive Neo v1.1
+ */

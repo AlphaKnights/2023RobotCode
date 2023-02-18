@@ -243,6 +243,10 @@ public final class Constants {
  *  11: Back Right Swerve Drive Neo v1.1
  *  12: Back Left Swerve Drive Neo v1.1
  * 
+ * DIO Ports:
+ *  0: Elevator Bottom
+ *  1: Arm Bottom
+ * 
  * Controllers:
  *  PSP: 0: Driver:
  *   Axis:

@@ -8,16 +8,17 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class NavXZeroCommand extends InstantCommand {
-  DriveSubsystem driveSubsystem;
+  DriveSubsystem m_driveSubsystem;
   /** Creates a new NavXZero. */
-  public NavXZeroCommand() {
+  public NavXZeroCommand(DriveSubsystem p_driveSubsystem) {
+    m_driveSubsystem = p_driveSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(driveSubsystem);
+    addRequirements(m_driveSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    driveSubsystem.zeroHeading();
+    m_driveSubsystem.zeroHeading();
   }
 }

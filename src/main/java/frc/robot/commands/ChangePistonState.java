@@ -9,19 +9,20 @@ import frc.robot.Constants.PistonState;
 import frc.robot.subsystems.ClawSubsystem;
 
 public class ChangePistonState extends InstantCommand {
-  ClawSubsystem clawSubsystem;
-  PistonState state;
+  ClawSubsystem m_clawSubsystem;
+  PistonState m_state;
   /** Creates a new ChangePistionState. */
-  public ChangePistonState(PistonState newState, ClawSubsystem _clawSubsystem) {
+  public ChangePistonState(PistonState p_newState, ClawSubsystem p_clawSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    state = newState;
-    clawSubsystem = _clawSubsystem;
+    m_state = p_newState;
+    m_clawSubsystem = p_clawSubsystem;
+    addRequirements(m_clawSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     //Sets the position of the pistons
-    clawSubsystem.setPistonState(state);
+    m_clawSubsystem.setPistonState(m_state);
   }
 }

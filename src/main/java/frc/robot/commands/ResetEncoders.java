@@ -18,6 +18,7 @@ public class ResetEncoders extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    //Resets the encoders
     driveSubsystem.resetEncoders();
   }
 }

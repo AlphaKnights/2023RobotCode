@@ -21,6 +21,7 @@ public class ChangePistonState extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    //Sets the position of the pistons
     clawSubsystem.setPistonState(state);
   }
 }

@@ -35,25 +35,25 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   /**
    * 
-   * @param Power the power to set the arm to, between -1 and 1. It will refuse to move in the reverse direction if the limit switch is pressed.
+   * @param p_power the power to set the arm to, between -1 and 1. It will refuse to move in the reverse direction if the limit switch is pressed.
    */
-  public void setPower(double Power) {
+  public void setPower(double p_power) {
     if (reverseLimit.get()) {
       elevatorFalcon.set(ControlMode.PercentOutput, 0);
       elevatorFalcon.setSelectedSensorPosition(ElevatorConstants.kReverseVerticalCount);
     } else {
-      elevatorFalcon.set(ControlMode.PercentOutput, Power);
+      elevatorFalcon.set(ControlMode.PercentOutput, p_power);
     }
   }
 
   /**
    * 
-   * @param position the position to move the arm to, in encoder counts.
+   * @param p_position the position to move the arm to, in encoder counts.
    */
-  public void goToPosition(double position) {
+  public void goToPosition(double p_position) {
     if(reverseLimit.get()){
       elevatorFalcon.setSelectedSensorPosition(ElevatorConstants.kReverseVerticalCount);
     }
-    elevatorFalcon.set(ControlMode.Position, position);
+    elevatorFalcon.set(ControlMode.Position, p_position);
   }
 }

@@ -20,6 +20,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
+    //Sets Encoder limits
     armConfig.forwardSoftLimitEnable = true;
     armConfig.reverseSoftLimitEnable = true;
     armConfig.forwardSoftLimitThreshold = ArmConstants.kFowardRotationCount;
@@ -35,25 +36,27 @@ public class ArmSubsystem extends SubsystemBase {
 
   /**
    * 
-   * @param Power the power to set the arm to, between -1 and 1. It will refuse to move in the reverse direction if the limit switch is pressed.
+   * @param p_power the power to set the arm to, between -1 and 1. It will refuse to move in the reverse direction if the limit switch is pressed.
    */
-  public void setPower(double Power) {
+  public void setPower(double p_power) {
+    //Checks the limit switch and if triggered, sets the encoder to the reverse limit to the reverse limit and stops the motor
     if (reverseLimit.get()) {
       armFalcon.set(ControlMode.PercentOutput, 0);
       armFalcon.setSelectedSensorPosition(ArmConstants.kReverseRotationCount);
     } else {
-      armFalcon.set(ControlMode.PercentOutput, Power);
+      armFalcon.set(ControlMode.PercentOutput, p_power);
     }
   }
 
   /**
    * 
-   * @param position the position to move the arm to, in encoder counts.
+   * @param p_position the position to move the arm to, in encoder counts.
    */
-  public void goToPosition(double position) {
+  public void goToPosition(double p_position) {
+    //Checks the limit switch and if triggered, sets the encoder to the reverse limit to the reverse limit
     if(reverseLimit.get()){
       armFalcon.setSelectedSensorPosition(ArmConstants.kReverseRotationCount);
     }
-    armFalcon.set(ControlMode.Position, position);
+    armFalcon.set(ControlMode.Position, p_position);
   }
 }

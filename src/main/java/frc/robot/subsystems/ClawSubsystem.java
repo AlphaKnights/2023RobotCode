@@ -12,7 +12,9 @@ import frc.robot.Constants.ClawConstants;
 import frc.robot.Constants.PistonState;
 
 public class ClawSubsystem extends SubsystemBase {
+  //Sets up the pneumatics hub for the claw
   PneumaticHub clawHub = new PneumaticHub(ClawConstants.kRevPneumaticPort);
+  //Sets up the pistons for the claw
   DoubleSolenoid piston1 = new DoubleSolenoid(ClawConstants.kRevPneumaticPort, PneumaticsModuleType.REVPH, ClawConstants.kPiston1FwdPort, ClawConstants.kPiston1RevPort);
   DoubleSolenoid piston2 = new DoubleSolenoid(ClawConstants.kRevPneumaticPort, PneumaticsModuleType.REVPH, ClawConstants.kPiston2FwdPort, ClawConstants.kPiston2RevPort);
   /** Creates a new ClawSubsystem. */
@@ -23,8 +25,13 @@ public class ClawSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void setPistonState(PistonState state) {
-    switch (state) {
+  /**
+   * Sets the state of the pistons
+   * 
+   * @param p_state state the claw should be, OPEN, HALF, CLOSED, or OFF
+   */
+  public void setPistonState(PistonState p_state) {
+    switch (p_state) {
       case OPEN:
         piston1.set(DoubleSolenoid.Value.kForward);
         piston2.set(DoubleSolenoid.Value.kForward);

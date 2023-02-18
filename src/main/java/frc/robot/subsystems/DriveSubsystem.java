@@ -93,9 +93,9 @@ public class DriveSubsystem extends SubsystemBase {
   /**
    * Resets the odometry to the specified pose.
    *
-   * @param pose The pose to which to set the odometry.
+   * @param p_pose The pose to which to set the odometry.
    */
-  public void resetOdometry(Pose2d pose) {
+  public void resetOdometry(Pose2d p_pose) {
     m_odometry.resetPosition(
         Rotation2d.fromDegrees(m_gyro.getAngle()),
         new SwerveModulePosition[] {
@@ -104,7 +104,7 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
         },
-        pose);
+        p_pose);
   }
 
   /**
@@ -200,15 +200,15 @@ public class DriveSubsystem extends SubsystemBase {
   /**
    * Sets the swerve ModuleStates.
    *
-   * @param desiredStates The desired SwerveModule states.
+   * @param p_desiredStates The desired SwerveModule states.
    */
-  public void setModuleStates(SwerveModuleState[] desiredStates) {
+  public void setModuleStates(SwerveModuleState[] p_desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
-    m_frontLeft.setDesiredState(desiredStates[0]);
-    m_frontRight.setDesiredState(desiredStates[1]);
-    m_rearLeft.setDesiredState(desiredStates[2]);
-    m_rearRight.setDesiredState(desiredStates[3]);
+        p_desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
+    m_frontLeft.setDesiredState(p_desiredStates[0]);
+    m_frontRight.setDesiredState(p_desiredStates[1]);
+    m_rearLeft.setDesiredState(p_desiredStates[2]);
+    m_rearRight.setDesiredState(p_desiredStates[3]);
   }
 
   /** Resets the drive encoders to currently read a position of 0. */
@@ -240,5 +240,21 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public double getTurnRate() {
     return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+  }
+
+  /** Sets the Swerve Drive to certain angles */
+  public void setSwerveDriveAngles(double backLeftAngle, double backRightAngle, double frontLeftAngle, double frontRightAngle) {
+    m_frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(frontLeftAngle)));
+    m_frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(frontRightAngle)));
+    m_rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(backLeftAngle)));
+    m_rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(backRightAngle)));
+  }
+
+  /** Sets all the Swerve Drive Chassis Offsets */
+  public void changeSwerveChassisOffsets(double kBackLeftChassisOffset, double kBackRightChassisOffset, double kFrontLeftChassisOffset, double kFrontRightChassisOffset) {
+    m_frontLeft.setChassisOffset(kFrontLeftChassisOffset);
+    m_frontRight.setChassisOffset(kFrontRightChassisOffset);
+    m_rearLeft.setChassisOffset(kBackLeftChassisOffset);
+    m_rearRight.setChassisOffset(kBackRightChassisOffset);
   }
 }

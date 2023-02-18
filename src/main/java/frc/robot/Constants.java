@@ -30,12 +30,13 @@ public final class Constants {
     public static final double kDriveDeadband = 0.05;
     public static final int kNavXZeroButton = 1;
     public static final int kResetEncodersButton = 2;
+    public static final int kHoldPositionButton = 3;
     //Left Flight Stick
-    public static final int kLeftJoystickControllerPort = 0;
-    public static final double kLeftJoystickDeadband = 0.05;
+    public static final int kLeftJoystickControllerPort = 0; // Default port for the left flight joystick
+    public static final double kLeftJoystickDeadband = 0.05; // Deadband for the left flight joystick
     //Right Flight Stick
-    public static final int kRightJoystickControllerPort = 0;
-    public static final double kRightJoystickDeadband = 0.05;
+    public static final int kRightJoystickControllerPort = 1; // Default port for the right flight joystick
+    public static final double kRightJoystickDeadband = 0.05; // Deadband for the right flight joystick
     public static final int toggleCompressorButton = 2; // Thumb Button
     public static final int clawShutButton = 1; // Trigger Button
     public static final int clawHalfShutButton = 3; // Button 3

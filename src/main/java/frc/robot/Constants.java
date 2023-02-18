@@ -65,6 +65,7 @@ public final class Constants {
         new Translation2d(-kWheelBase / 2, -kTrackWidth / 2),
         new Translation2d(-kWheelBase / 2, kTrackWidth / 2));
 
+    public static final String kModuleNames[] = { "Front Left", "Front Right", "Back Left", "Back Right" };
     // Angular offsets of the modules relative to the chassis in degrees 
     
     //TODO: Temporary comment out till constants are tuned, once tuned insert values and uncomment below:

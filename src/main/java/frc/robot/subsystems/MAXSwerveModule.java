@@ -7,10 +7,9 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.Topic;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -34,10 +33,12 @@ public class MAXSwerveModule {
   private double m_chassisAngularOffset = 0;
   private SwerveModuleState m_desiredState = new SwerveModuleState(0.0, new Rotation2d());
 
-  private Topic m_table = NetworkTableInstance.getDefault().getTable("SwerveDrive").getTopic("Swerve Drive");
+  private NetworkTable m_table;
   // private NetworkTableEntry m_moduleAngle = m_table.
   // private NetworkTableEntry m_moduleOffset = m_table.getEntry("Module Offset");
-  private NetworkTableEntry m_moduleOffset = new NetworkTableEntry(m_table, 0);
+  private DoubleEntry m_moduleOffset;
+  private DoubleEntry m_moduleAngle;
+  private DoubleEntry m_moduleSpeed;
 
   /**
    * Constructs a MAXSwerveModule and configures the driving and turning motor,
@@ -46,6 +47,10 @@ public class MAXSwerveModule {
    * Encoder.
    */
   public MAXSwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset, String name) {
+    m_table = NetworkTableInstance.getDefault().getTable("Swerve Drive Module " + name);
+    m_moduleOffset = m_table.getDoubleTopic("Swerve Drive Offset").getEntry(chassisAngularOffset);
+    m_moduleAngle = m_table.getDoubleTopic("Swerve Drive Angle").getEntry(0.0);
+    m_moduleSpeed = m_table.getDoubleTopic("Swerve Drive Speed").getEntry(0.0);
     // m_moduleAngle
     m_drivingSparkMax = new CANSparkMax(drivingCANId, MotorType.kBrushless);
     m_turningSparkMax = new CANSparkMax(turningCANId, MotorType.kBrushless);
@@ -164,6 +169,9 @@ public class MAXSwerveModule {
     m_drivingPIDController.setReference(optimizedDesiredState.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);
     m_turningPIDController.setReference(optimizedDesiredState.angle.getRadians(), CANSparkMax.ControlType.kPosition);
 
+    m_moduleAngle.set(optimizedDesiredState.angle.getDegrees());
+    m_moduleSpeed.set(optimizedDesiredState.speedMetersPerSecond);
+
     m_desiredState = p_desiredState;
   }
 
@@ -175,5 +183,6 @@ public class MAXSwerveModule {
   /** Changes the chassis offeset */
   public void setChassisOffset(double p_chassisAngularOffset) {
     m_chassisAngularOffset = p_chassisAngularOffset;
+    m_moduleOffset.set(p_chassisAngularOffset);
   }
 }

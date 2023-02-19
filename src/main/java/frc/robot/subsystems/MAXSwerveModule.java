@@ -5,13 +5,17 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 public class MAXSwerveModule extends SubsystemBase {
 	/** Creates a new MAXSwerveModule. */
-	public MAXSwerveModule() {}
+	public MAXSwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset) {
+	}
 
 	@Override
 	public void periodic() {
 		// This method will be called once per scheduler run
 	}
+
+	public void setDesiredState(SwerveModuleState desiredState) {}
 }

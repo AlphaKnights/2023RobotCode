@@ -234,14 +234,14 @@ public final class Constants {
  *  2: Rev PH
  *  3: Arm Falcon 500
  *  4: Elevator Falcon 500
- *  5: Front Right Swerve Steering Neo 550
- *  6: Front Left Swerve Steering Neo 550
- *  7: Back Right Swerve Steering Neo 550
- *  8: Back Left Swerve Steering Neo 550
- *  9: Front Right Swerve Drive Neo v1.1
- *  10: Front Left Swerve Drive Neo v1.1
- *  11: Back Right Swerve Drive Neo v1.1
- *  12: Back Left Swerve Drive Neo v1.1
+ *  5: Front Right Swerve Drive Neo v1.1
+ *  6: Front Left Swerve Drive Neo v1.1
+ *  7: Back Right Swerve Drive Neo v1.1
+ *  8: Back Left Swerve Drive Neo v1.1
+ *  9: Front Right Swerve Steering Neo 550
+ *  10: Front Left Swerve Steering Neo 550
+ *  11: Back Right Swerve Steering Neo 550
+ *  12: Back Left Swerve Steering Neo 550
  * 
  * DIO Ports:
  *  0: Elevator Bottom

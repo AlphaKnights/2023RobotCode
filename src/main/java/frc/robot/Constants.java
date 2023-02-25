@@ -47,6 +47,9 @@ public final class Constants {
     public static final int kClawOffButton = 6; // Button 6
     public static final int kExtendWristButton = 5; // Button 5
     public static final int kRetractWristButton = 12; // Button 12
+
+    //Speed Limiters:
+    public static final double kJoystickInput = 0.5;
   }
 
   public static final class DriveConstants {

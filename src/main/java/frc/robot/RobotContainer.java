@@ -21,9 +21,11 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.PistonState;
 import frc.robot.commands.ChangePistonStateCommand;
+import frc.robot.commands.ExtendWristCommand;
 import frc.robot.commands.GetRobotStatusCommand;
 import frc.robot.commands.HoldPositionCommand;
 import frc.robot.commands.NavXZeroCommand;
+import frc.robot.commands.RetractWristCommand;
 import frc.robot.commands.ToggleCompressorCommand;
 import frc.robot.commands.TogglePistonStateCommand;
 import frc.robot.subsystems.ArmSubsystem;
@@ -55,6 +57,8 @@ public class RobotContainer {
   private final ChangePistonStateCommand m_offClawStateCommand = new ChangePistonStateCommand(PistonState.OFF, m_pneumaticsSubsystem);
   private final TogglePistonStateCommand m_toggleClawStateCommand = new TogglePistonStateCommand(m_pneumaticsSubsystem);
   private final ToggleCompressorCommand m_toggleCompressorCommand = new ToggleCompressorCommand(m_pneumaticsSubsystem);
+  private final ExtendWristCommand m_extendWristCommand = new ExtendWristCommand(m_pneumaticsSubsystem);
+  private final RetractWristCommand m_retractWristCommand = new RetractWristCommand(m_pneumaticsSubsystem);
   //Swerve
   private final HoldPositionCommand m_holdPositionCommand = new HoldPositionCommand(m_robotDrive);
   //Robot Status
@@ -68,9 +72,11 @@ public class RobotContainer {
   Joystick m_operatorLeftJoystick = new Joystick(OIConstants.kLeftJoystickControllerPort);//Elevator
     JoystickButton m_robotStatusButton = new JoystickButton(m_operatorLeftJoystick, OIConstants.kRobotStatusButton);
   Joystick m_operatorRightJoystick = new Joystick(OIConstants.kRightJoystickControllerPort);//Arm
-    JoystickButton m_toggleClawButton = new JoystickButton(m_operatorRightJoystick, OIConstants.clawToggleButton);//Button for full open claw
-    JoystickButton m_offClawButton = new JoystickButton(m_operatorRightJoystick, OIConstants.clawOffButton);//Button for claw off, basically turns of the solonoids for the claw
-    JoystickButton m_toggleCompressorButton = new JoystickButton(m_operatorRightJoystick, OIConstants.toggleCompressorButton);//Button for toggling the compressor
+    JoystickButton m_toggleClawButton = new JoystickButton(m_operatorRightJoystick, OIConstants.kClawToggleButton);//Button for full open claw
+    JoystickButton m_offClawButton = new JoystickButton(m_operatorRightJoystick, OIConstants.kClawOffButton);//Button for claw off, basically turns of the solonoids for the claw
+    JoystickButton m_toggleCompressorButton = new JoystickButton(m_operatorRightJoystick, OIConstants.kToggleCompressorButton);//Button for toggling the compressor
+    JoystickButton m_extendWristButton = new JoystickButton(m_operatorRightJoystick, OIConstants.kExtendWristButton);//Button for extending the wrist
+    JoystickButton m_retractWristButton = new JoystickButton(m_operatorRightJoystick, OIConstants.kRetractWristButton);//Button for retracting the wrist
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -82,11 +88,14 @@ public class RobotContainer {
     m_zeroButton.onFalse(m_zeroCommand);//Triggers when the button is released
     // Xbox controller button for holding the current position
     m_holdPosition.whileTrue(m_holdPositionCommand);//Runs while the button is pressed
-    //Button for claw piston states based on the Operator's Joystick
+    //Buttons for claw piston states based on the Operator's Joystick
     m_toggleClawButton.onTrue(m_toggleClawStateCommand);//Triggers when the button is pressed
     m_offClawButton.onTrue(m_offClawStateCommand);//Triggers when the button is pressed
     //Button for toggling the compressor
     m_toggleCompressorButton.onTrue(m_toggleCompressorCommand);//Triggers when the button is pressed
+    //Buttons for controlling the wrist
+    m_extendWristButton.toggleOnTrue(m_extendWristCommand);//Triggers when the button is pressed
+    m_retractWristButton.toggleOnTrue(m_retractWristCommand);//Triggers when the button is pressed
     //Button for getting the robot status
     m_robotStatusButton.onTrue(m_getRobotStatusCommand);
     // Configure default commands

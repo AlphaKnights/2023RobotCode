@@ -119,7 +119,7 @@ public final class Constants {
     public static final double kFowardRotationCount = kMaxFowardRotation*kSensorCountPerRevolution;
     public static final double kReverseRotationCount = kMaxReverseRotation*kSensorCountPerRevolution;
     public static final int kArmFalconID = 4;
-    public static final int kLimitSwitchPort = 1;
+    public static final int kLimitSwitchPort = 2;
   }
 
   public static final class PneumaticConstants{

@@ -22,8 +22,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
-    elevatorConfig.forwardSoftLimitEnable = true;
-    elevatorConfig.reverseSoftLimitEnable = true;
+    elevatorConfig.forwardSoftLimitEnable = false;
+    elevatorConfig.reverseSoftLimitEnable = false;
     elevatorConfig.forwardSoftLimitThreshold = ElevatorConstants.kFowardVerticalCount;
     elevatorConfig.reverseSoftLimitThreshold = ElevatorConstants.kReverseVerticalCount;
     elevatorFalcon.configAllSettings(elevatorConfig);

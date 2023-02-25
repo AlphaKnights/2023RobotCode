@@ -108,7 +108,8 @@ public final class Constants {
     public static final double kFowardVerticalCount = kMaxFowardVerticalRotation*kSensorCountPerRevolution;
     public static final double kReverseVerticalCount = kMaxReverseVerticalRotation*kSensorCountPerRevolution;
     public static final int kElevatorFalconID = 3;
-    public static final int kLimitSwitchPort = 0;
+    public static final int kReverseLimitSwitchPort = 0;
+    public static final int kForwardLimitSwitchPort = 1;
   }
 
   public static final class ArmConstants{

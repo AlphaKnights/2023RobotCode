@@ -17,12 +17,13 @@ public class ElevatorSubsystem extends SubsystemBase {
   //Config the falcon and the limit switches
   TalonFX elevatorFalcon = new TalonFX(ElevatorConstants.kElevatorFalconID);
   TalonFXConfiguration elevatorConfig = new TalonFXConfiguration();
-  DigitalInput reverseLimit = new DigitalInput(ElevatorConstants.kLimitSwitchPort);
+  DigitalInput reverseLimit = new DigitalInput(ElevatorConstants.kReverseLimitSwitchPort);
+  DigitalInput forwardLimit = new DigitalInput(ElevatorConstants.kForwardLimitSwitchPort);
 
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
-    elevatorConfig.forwardSoftLimitEnable = false;
-    elevatorConfig.reverseSoftLimitEnable = false;
+    elevatorConfig.forwardSoftLimitEnable = true;
+    elevatorConfig.reverseSoftLimitEnable = true;
     elevatorConfig.forwardSoftLimitThreshold = ElevatorConstants.kFowardVerticalCount;
     elevatorConfig.reverseSoftLimitThreshold = ElevatorConstants.kReverseVerticalCount;
     elevatorFalcon.configAllSettings(elevatorConfig);
@@ -40,14 +41,19 @@ public class ElevatorSubsystem extends SubsystemBase {
    * @param p_power the power to set the elevator to, between -1 and 1. It will refuse to move in the reverse direction if the limit switch is pressed.
    */
   public void setPower(double p_power) {
-    // if (reverseLimit.get()) {
-    //   if(p_power<0){
-    //     elevatorFalcon.set(ControlMode.PercentOutput, 0);
-    //   }
-    //   elevatorFalcon.setSelectedSensorPosition(ElevatorConstants.kReverseVerticalCount);
-    // } else {
-      elevatorFalcon.set(ControlMode.PercentOutput, p_power);
-    // }
+    if (reverseLimit.get()) {
+      if(p_power<0){
+        elevatorFalcon.set(ControlMode.PercentOutput, 0);
+      }
+      elevatorFalcon.setSelectedSensorPosition(ElevatorConstants.kReverseVerticalCount);
+    } else if (forwardLimit.get()){
+      if(p_power>0){
+        elevatorFalcon.set(ControlMode.PercentOutput, 0);
+      }
+      elevatorFalcon.setSelectedSensorPosition(ElevatorConstants.kReverseVerticalCount);
+    } else {
+     elevatorFalcon.set(ControlMode.PercentOutput, p_power);
+    }
   }
 
   /**

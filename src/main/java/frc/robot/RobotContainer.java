@@ -14,7 +14,6 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
@@ -22,10 +21,13 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.PistonState;
 import frc.robot.commands.ChangePistonState;
+import frc.robot.commands.GetRobotStatus;
 import frc.robot.commands.HoldPosition;
 import frc.robot.commands.NavXZeroCommand;
+import frc.robot.commands.ToggleCompressor;
+import frc.robot.commands.TogglePistonState;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.ClawSubsystem;
+import frc.robot.subsystems.PneumaticsSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -45,14 +47,18 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ElevatorSubsystem m_elevatorSubsystem = new ElevatorSubsystem();
   private final ArmSubsystem m_armSubsystem = new ArmSubsystem();
-  private final ClawSubsystem m_clawSubsystem = new ClawSubsystem();
+  private final PneumaticsSubsystem m_pneumaticsSubsystem = new PneumaticsSubsystem();
   //Robot's Commands
+  //NavX
   private final NavXZeroCommand m_zeroCommand = new NavXZeroCommand(m_robotDrive);
-  private final ChangePistonState m_halfClawStateCommand = new ChangePistonState(PistonState.HALF, m_clawSubsystem);
-  private final ChangePistonState m_offClawStateCommand = new ChangePistonState(PistonState.OFF, m_clawSubsystem);
-  private final ChangePistonState m_openClawStateCommand = new ChangePistonState(PistonState.OPEN, m_clawSubsystem);
-  private final ChangePistonState m_closeClawStateCommand = new ChangePistonState(PistonState.CLOSED, m_clawSubsystem);
+  //Pneumatics
+  private final ChangePistonState m_offClawStateCommand = new ChangePistonState(PistonState.OFF, m_pneumaticsSubsystem);
+  private final TogglePistonState m_toggleClawStateCommand = new TogglePistonState(m_pneumaticsSubsystem);
+  private final ToggleCompressor m_toggleCompressorCommand = new ToggleCompressor(m_pneumaticsSubsystem);
+  //Swerve
   private final HoldPosition m_holdPositionCommand = new HoldPosition(m_robotDrive);
+  //Robot Status
+  private final GetRobotStatus m_getRobotStatusCommand = new GetRobotStatus(m_armSubsystem, m_robotDrive, m_elevatorSubsystem, m_pneumaticsSubsystem);
 
   // The driver's controller - driver drives the robot
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -60,18 +66,15 @@ public class RobotContainer {
     JoystickButton m_holdPosition = new JoystickButton(m_driverController, OIConstants.kHoldPositionButton);
   // The operator's controller - operator controls movement of the arm and elevator
   Joystick m_operatorLeftJoystick = new Joystick(OIConstants.kLeftJoystickControllerPort);//Elevator
+    JoystickButton m_robotStatusButton = new JoystickButton(m_operatorLeftJoystick, OIConstants.kRobotStatusButton);
   Joystick m_operatorRightJoystick = new Joystick(OIConstants.kRightJoystickControllerPort);//Arm
-  JoystickButton m_halfClawButton = new JoystickButton(m_operatorRightJoystick, OIConstants.clawHalfShutButton);//Button for half open claw
-  JoystickButton m_fullClawButton = new JoystickButton(m_operatorRightJoystick, OIConstants.clawOpenButton);//Button for full open claw
-  JoystickButton m_closeClawButton = new JoystickButton(m_operatorRightJoystick, OIConstants.clawShutButton);//Button for full closed claw
-  JoystickButton m_offClawButton = new JoystickButton(m_operatorRightJoystick, OIConstants.clawOffButton);//Button for claw off, basically turns of the solonoids for the claw
+    JoystickButton m_toggleClawButton = new JoystickButton(m_operatorRightJoystick, OIConstants.clawToggleButton);//Button for full open claw
+    JoystickButton m_offClawButton = new JoystickButton(m_operatorRightJoystick, OIConstants.clawOffButton);//Button for claw off, basically turns of the solonoids for the claw
+    JoystickButton m_toggleCompressorButton = new JoystickButton(m_operatorRightJoystick, OIConstants.toggleCompressorButton);//Button for toggling the compressor
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-
-    PneumaticHub ph = new PneumaticHub(2);
-    ph.enableCompressorAnalog(40, 45);
     // Configure the button bindings
     configureButtonBindings();
     // Configure all commands based on button pressed
@@ -80,10 +83,12 @@ public class RobotContainer {
     // Xbox controller button for holding the current position
     m_holdPosition.whileTrue(m_holdPositionCommand);//Runs while the button is pressed
     //Button for claw piston states based on the Operator's Joystick
-    m_halfClawButton.onTrue(m_halfClawStateCommand);//Triggers when the button is pressed
-    m_fullClawButton.onTrue(m_openClawStateCommand);//Triggers when the button is pressed
-    m_closeClawButton.onTrue(m_closeClawStateCommand);//Triggers when the button is pressed
+    m_toggleClawButton.onTrue(m_toggleClawStateCommand);//Triggers when the button is pressed
     m_offClawButton.onTrue(m_offClawStateCommand);//Triggers when the button is pressed
+    //Button for toggling the compressor
+    m_toggleCompressorButton.onTrue(m_toggleCompressorCommand);//Triggers when the button is pressed
+    //Button for getting the robot status
+    m_robotStatusButton.onTrue(m_getRobotStatusCommand);
     // Configure default commands
     m_elevatorSubsystem.setDefaultCommand(new RunCommand(() -> m_elevatorSubsystem.setPower(m_operatorRightJoystick.getY()*m_operatorRightJoystick.getThrottle()),m_elevatorSubsystem));
     m_armSubsystem.setDefaultCommand(new RunCommand(() -> m_armSubsystem.setPower(m_operatorLeftJoystick.getY()*m_operatorLeftJoystick.getThrottle()),m_armSubsystem));

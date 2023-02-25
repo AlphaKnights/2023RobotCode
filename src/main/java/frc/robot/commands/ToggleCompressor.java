@@ -5,24 +5,21 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.Constants.PistonState;
 import frc.robot.subsystems.PneumaticsSubsystem;
 
-public class ChangePistonState extends InstantCommand {
-  PneumaticsSubsystem m_clawSubsystem;
-  PistonState m_state;
-  /** Creates a new ChangePistionState. */
-  public ChangePistonState(PistonState p_newState, PneumaticsSubsystem p_clawSubsystem) {
+// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
+// information, see:
+// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
+public class ToggleCompressor extends InstantCommand {
+  PneumaticsSubsystem m_pneumaticsSubsystem;
+  public ToggleCompressor(PneumaticsSubsystem p_pneumaticsSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_state = p_newState;
-    m_clawSubsystem = p_clawSubsystem;
-    addRequirements(m_clawSubsystem);
+    addRequirements(m_pneumaticsSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    //Sets the position of the pistons
-    m_clawSubsystem.setClawState(m_state);
+    m_pneumaticsSubsystem.toggleCompressor();
   }
 }

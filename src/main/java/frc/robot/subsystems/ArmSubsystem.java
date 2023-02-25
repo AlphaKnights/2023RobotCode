@@ -64,4 +64,18 @@ public class ArmSubsystem extends SubsystemBase {
     }
     armFalcon.set(ControlMode.Position, p_position);
   }
+  
+  /**
+   * Gets the arm Falcon object, for debugging use only.
+   */
+  public TalonFX getArmFalcon(){
+    return armFalcon;
+  }
+
+  /**
+   * Gets the arm limit switch object, for debugging use only.
+   */
+  public DigitalInput getLimitSwitch(){
+    return reverseLimit;
+  }
 }

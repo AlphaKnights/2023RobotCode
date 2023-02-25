@@ -8,21 +8,23 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.PistonState;
 import frc.robot.subsystems.PneumaticsSubsystem;
 
-public class ChangePistonState extends InstantCommand {
-  PneumaticsSubsystem m_clawSubsystem;
-  PistonState m_state;
+public class TogglePistonState extends InstantCommand {
+  PneumaticsSubsystem m_pnuematicsSubsystem;
   /** Creates a new ChangePistionState. */
-  public ChangePistonState(PistonState p_newState, PneumaticsSubsystem p_clawSubsystem) {
+  public TogglePistonState(PneumaticsSubsystem p_clawSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_state = p_newState;
-    m_clawSubsystem = p_clawSubsystem;
-    addRequirements(m_clawSubsystem);
+    m_pnuematicsSubsystem = p_clawSubsystem;
+    addRequirements(m_pnuematicsSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     //Sets the position of the pistons
-    m_clawSubsystem.setClawState(m_state);
+    if(m_pnuematicsSubsystem.getClawState() == PistonState.OPEN){
+      m_pnuematicsSubsystem.setClawState(PistonState.CLOSED);
+    }
+    else{
+      m_pnuematicsSubsystem.setClawState(PistonState.OPEN);}
   }
 }

@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
@@ -20,11 +21,13 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   /** Creates a new ArmSubsystem. */
   public ElevatorSubsystem() {
-    armConfig.forwardSoftLimitEnable = true;
-    armConfig.reverseSoftLimitEnable = true;
+    armConfig.forwardSoftLimitEnable = false;
+    armConfig.reverseSoftLimitEnable = false;
+    // armConfig`
     armConfig.forwardSoftLimitThreshold = ElevatorConstants.kFowardVerticalCount;
     armConfig.reverseSoftLimitThreshold = ElevatorConstants.kReverseVerticalCount;
     elevatorFalcon.configAllSettings(armConfig);
+    elevatorFalcon.setNeutralMode(NeutralMode.Brake);
     elevatorFalcon.setSelectedSensorPosition(ElevatorConstants.kReverseVerticalCount);
   }
 
@@ -38,14 +41,14 @@ public class ElevatorSubsystem extends SubsystemBase {
    * @param p_power the power to set the arm to, between -1 and 1. It will refuse to move in the reverse direction if the limit switch is pressed.
    */
   public void setPower(double p_power) {
-    if (reverseLimit.get()) {
-      if(p_power<0){
-        elevatorFalcon.set(ControlMode.PercentOutput, 0);
-      }
-      elevatorFalcon.setSelectedSensorPosition(ElevatorConstants.kReverseVerticalCount);
-    } else {
+    // if (reverseLimit.get()) {
+    //   if(p_power<0){
+    //     elevatorFalcon.set(ControlMode.PercentOutput, 0);
+    //   }
+    //   elevatorFalcon.setSelectedSensorPosition(ElevatorConstants.kReverseVerticalCount);
+    // } else {
       elevatorFalcon.set(ControlMode.PercentOutput, p_power);
-    }
+    // }
   }
 
   /**

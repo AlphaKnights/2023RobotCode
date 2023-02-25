@@ -27,7 +27,7 @@ public final class Constants {
   public static final class OIConstants {
     //PSP Controller
     public static final int kDriverControllerPort = 0;
-    public static final double kDriveDeadband = 0.05;
+    public static final double kDriveDeadband = 0.025;
     public static final int kNavXZeroButton = 1;
     public static final int kResetEncodersButton = 2;
     public static final int kHoldPositionButton = 3;
@@ -62,8 +62,13 @@ public final class Constants {
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         new Translation2d(kWheelBase / 2, kTrackWidth / 2),
         new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
-        new Translation2d(-kWheelBase / 2, -kTrackWidth / 2),
-        new Translation2d(-kWheelBase / 2, kTrackWidth / 2));
+        new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
+        new Translation2d(-kWheelBase / 2, -kTrackWidth / 2)
+        // new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
+        // new Translation2d(-kWheelBase / 2, -kTrackWidth / 2),
+        // new Translation2d(kWheelBase / 2, kTrackWidth / 2),
+        // new Translation2d(kWheelBase / 2, -kTrackWidth / 2)
+        );
 
     // Angular offsets of the modules relative to the chassis in degrees 
     
@@ -80,10 +85,10 @@ public final class Constants {
     // public static final double kBackLeftChassisAngularOffset = kBackLeftChassisAngularOffsetDegrees*(Math.PI/180);
     // public static final double kBackRightChassisAngularOffset = kBackRightChassisAngularOffsetDegrees*(Math.PI/180);
 
-    public static double kFrontLeftChassisAngularOffsetDegrees = 0;
-    public static double kFrontRightChassisAngularOffsetDegrees = 0;
-    public static double kBackLeftChassisAngularOffsetDegrees = -90;
-    public static double kBackRightChassisAngularOffsetDegrees = -30;
+    public static double kFrontLeftChassisAngularOffsetDegrees = -101.5;//80
+    public static double kFrontRightChassisAngularOffsetDegrees = 124.5;//-52.5
+    public static double kBackLeftChassisAngularOffsetDegrees = -51.5;//130
+    public static double kBackRightChassisAngularOffsetDegrees = -121;//60
 
     // Angular offsets of the modules relative to the chassis in radians
     public static double kFrontLeftChassisAngularOffset = kFrontLeftChassisAngularOffsetDegrees*(Math.PI/180);
@@ -107,8 +112,8 @@ public final class Constants {
 
   public static final class ElevatorConstants{
     public static final double kSensorCountPerRevolution = 2048;
-    public static final double kMaxFowardVerticalRotation = 5;// Up
-    public static final double kMaxReverseVerticalRotation = 0; //Down, set to 0 as it starts in the fully down state so it starts in pos 0
+    public static final double kMaxFowardVerticalRotation = 250;// Up
+    public static final double kMaxReverseVerticalRotation = 200; //Down, set to 0 as it starts in the fully down state so it starts in pos 0
     public static final double kFowardVerticalCount = kMaxFowardVerticalRotation*kSensorCountPerRevolution;
     public static final double kReverseVerticalCount = kMaxReverseVerticalRotation*kSensorCountPerRevolution;
     public static final int kElevatorFalconID = 3;
@@ -117,8 +122,8 @@ public final class Constants {
 
   public static final class ArmConstants{
     public static final double kSensorCountPerRevolution = 2048;
-    public static final double kMaxFowardRotation = 5;// Out
-    public static final double kMaxReverseRotation = 0; //In, starts fully in so it starts in pos 0
+    public static final double kMaxFowardRotation = 250;// Out
+    public static final double kMaxReverseRotation = 200; //In, starts fully in so it starts in pos 0
     public static final double kFowardRotationCount = kMaxFowardRotation*kSensorCountPerRevolution;
     public static final double kReverseRotationCount = kMaxReverseRotation*kSensorCountPerRevolution;
     public static final int kArmFalconID = 4;

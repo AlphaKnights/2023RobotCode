@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
@@ -21,11 +22,12 @@ public class ArmSubsystem extends SubsystemBase {
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
     //Sets Encoder limits
-    armConfig.forwardSoftLimitEnable = true;
-    armConfig.reverseSoftLimitEnable = true;
+    armConfig.forwardSoftLimitEnable = false;
+    armConfig.reverseSoftLimitEnable = false;
     armConfig.forwardSoftLimitThreshold = ArmConstants.kFowardRotationCount;
     armConfig.reverseSoftLimitThreshold = ArmConstants.kReverseRotationCount;
     armFalcon.configAllSettings(armConfig);
+    armFalcon.setNeutralMode(NeutralMode.Brake);
     armFalcon.setSelectedSensorPosition(ArmConstants.kReverseRotationCount);
   }
 
@@ -40,15 +42,15 @@ public class ArmSubsystem extends SubsystemBase {
    */
   public void setPower(double p_power) {
     //Checks the limit switch and if triggered, sets the encoder to the reverse limit to the reverse limit and stops the motor
-    if (reverseLimit.get()) {
-      if(p_power<0){
-        armFalcon.set(ControlMode.PercentOutput, 0);
-      }
-      armFalcon.set(ControlMode.PercentOutput, 0);
-      armFalcon.setSelectedSensorPosition(ArmConstants.kReverseRotationCount);
-    } else {
+    // if (reverseLimit.get()) {
+    //   if(p_power<0){
+    //     armFalcon.set(ControlMode.PercentOutput, 0);
+    //   }
+    //   armFalcon.set(ControlMode.PercentOutput, 0);
+    //   armFalcon.setSelectedSensorPosition(ArmConstants.kReverseRotationCount);
+    // } else {
       armFalcon.set(ControlMode.PercentOutput, p_power);
-    }
+    // }
   }
 
   /**

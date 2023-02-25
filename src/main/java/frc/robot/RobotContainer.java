@@ -14,6 +14,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
@@ -68,6 +69,9 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+
+    PneumaticHub ph = new PneumaticHub(2);
+    ph.enableCompressorAnalog(40, 45);
     // Configure the button bindings
     configureButtonBindings();
     // Configure all commands based on button pressed
@@ -81,15 +85,15 @@ public class RobotContainer {
     m_closeClawButton.onTrue(m_closeClawStateCommand);//Triggers when the button is pressed
     m_offClawButton.onTrue(m_offClawStateCommand);//Triggers when the button is pressed
     // Configure default commands
-    m_elevatorSubsystem.setDefaultCommand(new RunCommand(() -> m_elevatorSubsystem.setPower(m_operatorRightJoystick.getY()*m_operatorRightJoystick.getThrottle())));
-    m_armSubsystem.setDefaultCommand(new RunCommand(() -> m_armSubsystem.setPower(m_operatorLeftJoystick.getY()*m_operatorLeftJoystick.getThrottle())));
+    m_elevatorSubsystem.setDefaultCommand(new RunCommand(() -> m_elevatorSubsystem.setPower(m_operatorRightJoystick.getY()*m_operatorRightJoystick.getThrottle()),m_elevatorSubsystem));
+    m_armSubsystem.setDefaultCommand(new RunCommand(() -> m_armSubsystem.setPower(m_operatorLeftJoystick.getY()*m_operatorLeftJoystick.getThrottle()),m_armSubsystem));
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> m_robotDrive.drive(
-                -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftY()*.5, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftX()*.5, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
                 true, true),
             m_robotDrive));

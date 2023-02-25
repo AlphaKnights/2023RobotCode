@@ -66,11 +66,13 @@ public class DriveSubsystem extends SubsystemBase {
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
+    // m_gyro.setAngleAdjustment(-180);
   }
 
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
+    // System.out.println(getHeading());
     m_odometry.update(
         Rotation2d.fromDegrees(m_gyro.getAngle()),
         new SwerveModulePosition[] {
@@ -177,7 +179,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, Rotation2d.fromDegrees(m_gyro.getAngle()))
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, Rotation2d.fromDegrees(-m_gyro.getAngle()))
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
@@ -256,5 +258,33 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.setChassisOffset(kFrontRightChassisOffset);
     m_rearLeft.setChassisOffset(kBackLeftChassisOffset);
     m_rearRight.setChassisOffset(kBackRightChassisOffset);
+  }
+
+  /**
+   * Gets the MAXSwerveModules of the drive, for debugging purposes only.
+   */
+  public MAXSwerveModule[] getModules() {
+    return new MAXSwerveModule[] {m_frontLeft, m_frontRight, m_rearLeft, m_rearRight};
+  }
+
+  /**
+   * Gets the NavX gyro of the drive, for debugging purposes only.
+   */
+  public AHRS getGyro() {
+    return m_gyro;
+  }
+
+  //Return the rest of the variables that are initialized in the beginning of the class
+  /** Returns the desired rotation of the robot */
+  public double getDesiredRot() {
+    return m_currentRotation;
+  }
+  /** Returns the desired translation direction of the robot */
+  public double getDesiredTranslationDir() {
+    return m_currentTranslationDir;
+  }
+  /** Returns the desired translation magnitude of the robot */
+  public double getDesiredTranslationMag() {
+    return m_currentTranslationMag;
   }
 }

@@ -24,30 +24,38 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static final class NetworkTableConstants{
+    public static final boolean DEBUG = true;
+  }
+
   public static final class OIConstants {
     //PSP Controller
     public static final int kDriverControllerPort = 0;
-    public static final double kDriveDeadband = 0.05;
+    public static final double kDriveDeadband = 0.025;
     public static final int kNavXZeroButton = 1;
     public static final int kResetEncodersButton = 2;
     public static final int kHoldPositionButton = 3;
     //Left Flight Stick
     public static final int kLeftJoystickControllerPort = 1; // Default port for the left flight joystick
     public static final double kLeftJoystickDeadband = 0.05; // Deadband for the left flight joystick
+    public static final int kRobotStatusButton = 1; // Trigger Button
     //Right Flight Stick
     public static final int kRightJoystickControllerPort = 2; // Default port for the right flight joystick
     public static final double kRightJoystickDeadband = 0.05; // Deadband for the right flight joystick
-    public static final int toggleCompressorButton = 2; // Thumb Button
-    public static final int clawShutButton = 1; // Trigger Button
-    public static final int clawHalfShutButton = 3; // Button 3
-    public static final int clawOpenButton = 4; // Button 4
-    public static final int clawOffButton = 6; // Button 4
+    public static final int kToggleCompressorButton = 2; // Thumb Button
+    public static final int kClawToggleButton = 1; // Trigger Button
+    public static final int kClawOffButton = 6; // Button 6
+    public static final int kExtendWristButton = 5; // Button 5
+    public static final int kRetractWristButton = 12; // Button 12
+
+    //Speed Limiters:
+    public static final double kJoystickInput = 0.5;
   }
 
-  public static class DriveConstants {//TODO: Convert class to final once constants are tuned
+  public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 4.8;//TODO: get velocity working with the falcon 500
+    public static final double kMaxSpeedMetersPerSecond = 4.8;//TODO: Find max Speed
     public static final double kMaxAngularSpeed = .25 * Math.PI; // radians per second
 
     //slew containts to add motion curve
@@ -62,34 +70,22 @@ public final class Constants {
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         new Translation2d(kWheelBase / 2, kTrackWidth / 2),
         new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
-        new Translation2d(-kWheelBase / 2, -kTrackWidth / 2),
-        new Translation2d(-kWheelBase / 2, kTrackWidth / 2));
+        new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
+        new Translation2d(-kWheelBase / 2, -kTrackWidth / 2)
+        );
 
     // Angular offsets of the modules relative to the chassis in degrees 
-    
-    //TODO: Temporary comment out till constants are tuned, once tuned insert values and uncomment below:
 
-    // public static final double kFrontLeftChassisAngularOffsetDegrees = 0;
-    // public static final double kFrontRightChassisAngularOffsetDegrees = 0;
-    // public static final double kBackLeftChassisAngularOffsetDegrees = -90;
-    // public static final double kBackRightChassisAngularOffsetDegrees = -30;
-
-    // // Angular offsets of the modules relative to the chassis in radians
-    // public static final double kFrontLeftChassisAngularOffset = kFrontLeftChassisAngularOffsetDegrees*(Math.PI/180);
-    // public static final double kFrontRightChassisAngularOffset = kFrontRightChassisAngularOffsetDegrees*(Math.PI/180);
-    // public static final double kBackLeftChassisAngularOffset = kBackLeftChassisAngularOffsetDegrees*(Math.PI/180);
-    // public static final double kBackRightChassisAngularOffset = kBackRightChassisAngularOffsetDegrees*(Math.PI/180);
-
-    public static double kFrontLeftChassisAngularOffsetDegrees = 0;
-    public static double kFrontRightChassisAngularOffsetDegrees = 0;
-    public static double kBackLeftChassisAngularOffsetDegrees = -90;
-    public static double kBackRightChassisAngularOffsetDegrees = -30;
+    public static final double kFrontLeftChassisAngularOffsetDegrees = -101.5;
+    public static final double kFrontRightChassisAngularOffsetDegrees = 124.5;
+    public static final double kBackLeftChassisAngularOffsetDegrees = -51.5;
+    public static final double kBackRightChassisAngularOffsetDegrees = -121;
 
     // Angular offsets of the modules relative to the chassis in radians
-    public static double kFrontLeftChassisAngularOffset = kFrontLeftChassisAngularOffsetDegrees*(Math.PI/180);
-    public static double kFrontRightChassisAngularOffset = kFrontRightChassisAngularOffsetDegrees*(Math.PI/180);
-    public static double kBackLeftChassisAngularOffset = kBackLeftChassisAngularOffsetDegrees*(Math.PI/180);
-    public static double kBackRightChassisAngularOffset = kBackRightChassisAngularOffsetDegrees*(Math.PI/180);
+    public static final double kFrontLeftChassisAngularOffset = kFrontLeftChassisAngularOffsetDegrees*(Math.PI/180);
+    public static final double kFrontRightChassisAngularOffset = kFrontRightChassisAngularOffsetDegrees*(Math.PI/180);
+    public static final double kBackLeftChassisAngularOffset = kBackLeftChassisAngularOffsetDegrees*(Math.PI/180);
+    public static final double kBackRightChassisAngularOffset = kBackRightChassisAngularOffsetDegrees*(Math.PI/180);
 
     // SPARK MAX CAN IDs
     public static final int kFrontLeftDrivingCanId = 6;
@@ -107,8 +103,8 @@ public final class Constants {
 
   public static final class ElevatorConstants{
     public static final double kSensorCountPerRevolution = 2048;
-    public static final double kMaxFowardVerticalRotation = 5;// Up
-    public static final double kMaxReverseVerticalRotation = 0; //Down, set to 0 as it starts in the fully down state so it starts in pos 0
+    public static final double kMaxFowardVerticalRotation = 250;// Up
+    public static final double kMaxReverseVerticalRotation = 200; //Down, set to 0 as it starts in the fully down state so it starts in pos 0
     public static final double kFowardVerticalCount = kMaxFowardVerticalRotation*kSensorCountPerRevolution;
     public static final double kReverseVerticalCount = kMaxReverseVerticalRotation*kSensorCountPerRevolution;
     public static final int kElevatorFalconID = 3;
@@ -117,28 +113,29 @@ public final class Constants {
 
   public static final class ArmConstants{
     public static final double kSensorCountPerRevolution = 2048;
-    public static final double kMaxFowardRotation = 5;// Out
-    public static final double kMaxReverseRotation = 0; //In, starts fully in so it starts in pos 0
+    public static final double kMaxFowardRotation = 250;// Out
+    public static final double kMaxReverseRotation = 200; //In, starts fully in so it starts in pos 0
     public static final double kFowardRotationCount = kMaxFowardRotation*kSensorCountPerRevolution;
     public static final double kReverseRotationCount = kMaxReverseRotation*kSensorCountPerRevolution;
     public static final int kArmFalconID = 4;
     public static final int kLimitSwitchPort = 1;
   }
 
-  public static final class ClawConstants{
+  public static final class PneumaticConstants{
     public static final int kRevPneumaticPort = 2;
-    public static final int kPiston1FwdPort = 0;
-    public static final int kPiston1RevPort = 1;
-    public static final int kPiston2FwdPort = 2;
-    public static final int kPiston2RevPort = 3;
+    public static final int kClawFwdPort = 0;
+    public static final int kClawRevPort = 1;
+    public static final int kWristFwdPort = 3;
+    public static final int kWristRevPort = 4;
     public static final double kClawMinPressure = 40;
     public static final double kClawMaxPressure = 50;
+    public static final int kAnalogSensorPort = 0;
   }
 
   
 
   public static enum PistonState {
-    OPEN, HALF, CLOSED, OFF
+    OPEN, CLOSED, OFF
   }
 
   public static final class PIDConstants{
@@ -159,7 +156,7 @@ public final class Constants {
     // The MAXSwerve module can be configured with one of three pinion gears: 12T, 13T, or 14T.
     // This changes the drive speed of the module (a pinion gear with more teeth will result in a
     // robot that drives faster).
-    public static final int kDrivingMotorPinionTeeth = 13;
+    public static final int kDrivingMotorPinionTeeth = 14;
 
     // Invert the turning encoder, since the output shaft rotates in the opposite direction of
     // the steering motor in the MAXSwerve Module.
@@ -182,7 +179,8 @@ public final class Constants {
     public static final double kTurningEncoderPositionFactor = (2 * Math.PI); // radians
     public static final double kTurningEncoderVelocityFactor = (2 * Math.PI) / 60.0; // radians per second
 
-    public static final double kTurningEncoderPositionPIDMinInput = Math.PI/180; // radians
+    // public static final double kTurningEncoderPositionPIDMinInput = Math.PI/180; // radians
+    public static final double kTurningEncoderPositionPIDMinInput = 0; // radians
     public static final double kTurningEncoderPositionPIDMaxInput = kTurningEncoderPositionFactor; // radians
 
     public static final double kDrivingP = 0.04;
@@ -278,7 +276,7 @@ public final class Constants {
  *    5: X-Hat:
  *    6: Y-Hat:
  *   Buttons:
- *    1: Trigger:
+ *    1: Trigger: Log Robot Data
  *    2: Thumb Button:
  *    3: Back Left: 
  *    4: Back Right:
@@ -299,10 +297,10 @@ public final class Constants {
  *    5: X-Hat:
  *    6: Y-Hat:
  *   Buttons:
- *    1: Trigger: Claw Fully Shut
+ *    1: Trigger: Claw Toggle
  *    2: Thumb Button: Toggle Compressor
- *    3: Back Left: Claw Half Shut
- *    4: Back Right: Claw Open
+ *    3: Back Left:
+ *    4: Back Right: 
  *    5: Front Left: Claw Pneumatics Off
  *    6: Front Right:
  *    7: Button 7:

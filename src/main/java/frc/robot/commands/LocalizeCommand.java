@@ -6,9 +6,9 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 //TODO
-public class Localize extends CommandBase {
+public class LocalizeCommand extends CommandBase {
   /** Creates a new Localize. */
-  public Localize() {
+  public LocalizeCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 

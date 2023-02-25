@@ -20,12 +20,12 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.PistonState;
-import frc.robot.commands.ChangePistonState;
-import frc.robot.commands.GetRobotStatus;
-import frc.robot.commands.HoldPosition;
+import frc.robot.commands.ChangePistonStateCommand;
+import frc.robot.commands.GetRobotStatusCommand;
+import frc.robot.commands.HoldPositionCommand;
 import frc.robot.commands.NavXZeroCommand;
-import frc.robot.commands.ToggleCompressor;
-import frc.robot.commands.TogglePistonState;
+import frc.robot.commands.ToggleCompressorCommand;
+import frc.robot.commands.TogglePistonStateCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.PneumaticsSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -52,13 +52,13 @@ public class RobotContainer {
   //NavX
   private final NavXZeroCommand m_zeroCommand = new NavXZeroCommand(m_robotDrive);
   //Pneumatics
-  private final ChangePistonState m_offClawStateCommand = new ChangePistonState(PistonState.OFF, m_pneumaticsSubsystem);
-  private final TogglePistonState m_toggleClawStateCommand = new TogglePistonState(m_pneumaticsSubsystem);
-  private final ToggleCompressor m_toggleCompressorCommand = new ToggleCompressor(m_pneumaticsSubsystem);
+  private final ChangePistonStateCommand m_offClawStateCommand = new ChangePistonStateCommand(PistonState.OFF, m_pneumaticsSubsystem);
+  private final TogglePistonStateCommand m_toggleClawStateCommand = new TogglePistonStateCommand(m_pneumaticsSubsystem);
+  private final ToggleCompressorCommand m_toggleCompressorCommand = new ToggleCompressorCommand(m_pneumaticsSubsystem);
   //Swerve
-  private final HoldPosition m_holdPositionCommand = new HoldPosition(m_robotDrive);
+  private final HoldPositionCommand m_holdPositionCommand = new HoldPositionCommand(m_robotDrive);
   //Robot Status
-  private final GetRobotStatus m_getRobotStatusCommand = new GetRobotStatus(m_armSubsystem, m_robotDrive, m_elevatorSubsystem, m_pneumaticsSubsystem);
+  private final GetRobotStatusCommand m_getRobotStatusCommand = new GetRobotStatusCommand(m_armSubsystem, m_robotDrive, m_elevatorSubsystem, m_pneumaticsSubsystem);
 
   // The driver's controller - driver drives the robot
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);

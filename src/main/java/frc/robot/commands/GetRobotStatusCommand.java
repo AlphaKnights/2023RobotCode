@@ -22,12 +22,12 @@ import frc.robot.subsystems.PneumaticsSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class GetRobotStatus extends InstantCommand {
+public class GetRobotStatusCommand extends InstantCommand {
   ArmSubsystem m_armSubsystem;
   DriveSubsystem m_robotDrive;
   ElevatorSubsystem m_elevatorSubsystem;
   PneumaticsSubsystem m_pneumaticsSubsystem;
-  public GetRobotStatus(ArmSubsystem m_armSubsystem, DriveSubsystem m_robotDrive, ElevatorSubsystem m_elevatorSubsystem, PneumaticsSubsystem m_pneumaticsSubsystem) {
+  public GetRobotStatusCommand(ArmSubsystem m_armSubsystem, DriveSubsystem m_robotDrive, ElevatorSubsystem m_elevatorSubsystem, PneumaticsSubsystem m_pneumaticsSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_armSubsystem, m_robotDrive, m_elevatorSubsystem, m_pneumaticsSubsystem);
   }

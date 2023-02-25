@@ -7,11 +7,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class HoldPosition extends CommandBase {
+public class HoldPositionCommand extends CommandBase {
   DriveSubsystem m_driveSubsystem;
   private boolean m_isFinished = false;
   /** Creates a new HoldPosition. */
-  public HoldPosition(DriveSubsystem p_driveSubsystem) {
+  public HoldPositionCommand(DriveSubsystem p_driveSubsystem) {
     m_driveSubsystem = p_driveSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_driveSubsystem);

@@ -19,7 +19,6 @@ public class ElevatorSubsystem extends SubsystemBase {
   TalonFXConfiguration elevatorConfig = new TalonFXConfiguration();
   DigitalInput reverseLimit = new DigitalInput(ElevatorConstants.kReverseLimitSwitchPort);
   DigitalInput forwardLimit = new DigitalInput(ElevatorConstants.kForwardLimitSwitchPort);
-
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
     elevatorConfig.forwardSoftLimitEnable = false;
@@ -33,6 +32,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    // System.out.println(reverseLimit.get());
     // This method will be called once per scheduler run
   }
 
@@ -41,12 +41,12 @@ public class ElevatorSubsystem extends SubsystemBase {
    * @param p_power the power to set the elevator to, between -1 and 1. It will refuse to move in the reverse direction if the limit switch is pressed.
    */
   public void setPower(double p_power) {
-    if (reverseLimit.get()) {
+    if (reverseLimit.get()&&false) {
       if(p_power<0){
         elevatorFalcon.set(ControlMode.PercentOutput, 0);
       }
       elevatorFalcon.setSelectedSensorPosition(ElevatorConstants.kReverseVerticalCount);
-    } else if (forwardLimit.get()){
+    } else if (forwardLimit.get()&&false){
       if(p_power>0){
         elevatorFalcon.set(ControlMode.PercentOutput, 0);
       }

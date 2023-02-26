@@ -31,7 +31,8 @@ public class PneumaticsSubsystem extends SubsystemBase {
     wristChooser.setDefaultOption("Up", PistonState.OPEN);
     wristChooser.addOption("Down", PistonState.CLOSED);
     wristChooser.addOption("Off", PistonState.OFF);
-    inDebugMode = DriverStation.isTest();
+    inDebugMode = DriverStation.isTest();      disableCompressor();
+
   }
 
   @Override
@@ -139,6 +140,7 @@ public class PneumaticsSubsystem extends SubsystemBase {
       disableCompressor();
     }
     else{
+      System.out.println("Enabling!");
       setCompressorPressure(PneumaticConstants.kClawMinPressure, PneumaticConstants.kClawMaxPressure);
     }
   }

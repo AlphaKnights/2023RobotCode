@@ -13,6 +13,7 @@ import frc.robot.subsystems.PneumaticsSubsystem;
 public class ToggleCompressorCommand extends InstantCommand {
   PneumaticsSubsystem m_pneumaticsSubsystem;
   public ToggleCompressorCommand(PneumaticsSubsystem p_pneumaticsSubsystem) {
+    m_pneumaticsSubsystem = p_pneumaticsSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_pneumaticsSubsystem);
   }
@@ -21,5 +22,6 @@ public class ToggleCompressorCommand extends InstantCommand {
   @Override
   public void initialize() {
     m_pneumaticsSubsystem.toggleCompressor();
+    // m_pneumaticsSubsystem.disableCompressor();
   }
 }

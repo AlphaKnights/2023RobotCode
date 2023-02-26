@@ -27,8 +27,12 @@ public class GetRobotStatusCommand extends InstantCommand {
   DriveSubsystem m_robotDrive;
   ElevatorSubsystem m_elevatorSubsystem;
   PneumaticsSubsystem m_pneumaticsSubsystem;
-  public GetRobotStatusCommand(ArmSubsystem m_armSubsystem, DriveSubsystem m_robotDrive, ElevatorSubsystem m_elevatorSubsystem, PneumaticsSubsystem m_pneumaticsSubsystem) {
+  public GetRobotStatusCommand(ArmSubsystem p_armSubsystem, DriveSubsystem p_robotDrive, ElevatorSubsystem p_elevatorSubsystem, PneumaticsSubsystem p_pneumaticsSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
+    m_armSubsystem = p_armSubsystem;
+    m_robotDrive = p_robotDrive;
+    m_elevatorSubsystem = p_elevatorSubsystem;
+    m_pneumaticsSubsystem = p_pneumaticsSubsystem;
     addRequirements(m_armSubsystem, m_robotDrive, m_elevatorSubsystem, m_pneumaticsSubsystem);
   }
 

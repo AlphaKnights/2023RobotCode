@@ -11,8 +11,8 @@ public class HoldPositionCommand extends CommandBase {
   DriveSubsystem m_driveSubsystem;
   private boolean m_isFinished = false;
   /** Creates a new HoldPosition. */
-  public HoldPositionCommand(DriveSubsystem p_driveSubsystem) {
-    m_driveSubsystem = p_driveSubsystem;
+  public HoldPositionCommand(DriveSubsystem m_driveSubsystem) {
+    // m_driveSubsystem = m_driveSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_driveSubsystem);
   }

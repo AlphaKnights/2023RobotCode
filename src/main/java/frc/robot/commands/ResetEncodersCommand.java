@@ -10,7 +10,7 @@ import frc.robot.subsystems.DriveSubsystem;
 public class ResetEncodersCommand extends InstantCommand {
   DriveSubsystem driveSubsystem;
   /** Creates a new ResetEncoders. */
-  public ResetEncodersCommand() {
+  public ResetEncodersCommand(DriveSubsystem driveSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(driveSubsystem);
   }

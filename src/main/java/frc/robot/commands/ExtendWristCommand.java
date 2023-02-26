@@ -13,7 +13,8 @@ public class ExtendWristCommand extends CommandBase {
   /** Creates a new WristCommand. */
   public ExtendWristCommand(PneumaticsSubsystem p_pneumaticsSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(p_pneumaticsSubsystem);
+    m_pneumaticsSubsystem = p_pneumaticsSubsystem;
+    addRequirements(m_pneumaticsSubsystem);
   }
 
   // Called when the command is initially scheduled.

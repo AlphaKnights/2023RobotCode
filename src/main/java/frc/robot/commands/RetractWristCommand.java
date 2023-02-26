@@ -12,8 +12,9 @@ public class RetractWristCommand extends CommandBase {
   PneumaticsSubsystem m_pneumaticsSubsystem;
   /** Creates a new RetractWristCommand. */
   public RetractWristCommand(PneumaticsSubsystem p_pneumaticsSubsystem) {
+    m_pneumaticsSubsystem = p_pneumaticsSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(p_pneumaticsSubsystem);
+    addRequirements(m_pneumaticsSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -29,5 +30,5 @@ public class RetractWristCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_pneumaticsSubsystem.setWristState(PistonState.OFF);}
+    m_pneumaticsSubsystem.setWristState(PistonState.CLOSED);}
 }

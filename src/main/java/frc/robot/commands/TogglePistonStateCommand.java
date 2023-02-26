@@ -11,9 +11,9 @@ import frc.robot.subsystems.PneumaticsSubsystem;
 public class TogglePistonStateCommand extends InstantCommand {
   PneumaticsSubsystem m_pnuematicsSubsystem;
   /** Creates a new ChangePistionState. */
-  public TogglePistonStateCommand(PneumaticsSubsystem p_clawSubsystem) {
+  public TogglePistonStateCommand(PneumaticsSubsystem m_clawSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_pnuematicsSubsystem = p_clawSubsystem;
+    m_pnuematicsSubsystem = m_clawSubsystem;
     addRequirements(m_pnuematicsSubsystem);
   }
 

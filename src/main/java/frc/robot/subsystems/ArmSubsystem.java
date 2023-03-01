@@ -112,16 +112,16 @@ public class ArmSubsystem extends SubsystemBase {
     // ArmFalcon.set(ControlMode.Position, p_position);
   }
 
-  public boolean homeElevator(){
-    if(homeElevatorBottom()){
-      return homeElevatorTop();
+  public boolean homeArm(){
+    if(homeArmBottom()){
+      return homeArmTop();
     }
     else{
-      return homeElevatorBottom();
+      return homeArmBottom();
     }
   }
 
-  public boolean homeElevatorBottom(){
+  public boolean homeArmBottom(){
     if(reverseLimit.get()){
       ArmFalcon.setSelectedSensorPosition(ArmConstants.kReverseRotationCount);
       setPower(0);
@@ -133,7 +133,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
   }
 
-  public boolean homeElevatorTop(){
+  public boolean homeArmTop(){
     if(ArmFalcon.getStatorCurrent()>ArmConstants.kStallCurrent){
       ArmFalcon.configForwardSoftLimitThreshold(ArmFalcon.getSelectedSensorPosition());
       setPower(0);

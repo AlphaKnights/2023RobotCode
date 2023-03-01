@@ -9,7 +9,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
@@ -18,6 +17,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.PistonState;
 import frc.robot.commands.ChangePistonStateCommand;
@@ -65,7 +65,9 @@ public class RobotContainer {
   //Robot Status
   private final GetRobotStatusCommand m_getRobotStatusCommand = new GetRobotStatusCommand(m_armSubsystem, m_robotDrive, m_elevatorSubsystem, m_pneumaticsSubsystem);
 
-  private final ElevatorGoToPosition elevatorGoToPosition = new ElevatorGoToPosition(m_elevatorSubsystem);
+  private final ElevatorGoToPosition elevatorLowPositionCommand = new ElevatorGoToPosition(m_elevatorSubsystem, ElevatorConstants.kElevatorLowPosition);
+  private final ElevatorGoToPosition elevatorMidPositionCommand = new ElevatorGoToPosition(m_elevatorSubsystem, ElevatorConstants.kElevatorMidPosition);
+  private final ElevatorGoToPosition elevatorHighPositionCommand = new ElevatorGoToPosition(m_elevatorSubsystem, ElevatorConstants.kElevatorHighPosition);
   // The driver's controller - driver drives the robot
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
     JoystickButton m_zeroButton = new JoystickButton(m_driverController, OIConstants.kNavXZeroButton);
@@ -73,6 +75,9 @@ public class RobotContainer {
   // The operator's controller - operator controls movement of the arm and elevator
   Joystick m_operatorLeftJoystick = new Joystick(OIConstants.kLeftJoystickControllerPort);//Elevator
     JoystickButton m_robotStatusButton = new JoystickButton(m_operatorLeftJoystick, OIConstants.kRobotStatusButton);
+    JoystickButton m_elevatorLowButton = new JoystickButton(m_operatorLeftJoystick, OIConstants.kElevatorPositionLow);
+    JoystickButton m_elevatorMidButton = new JoystickButton(m_operatorLeftJoystick, OIConstants.kElevatorPositionMid);
+    JoystickButton m_elevatorHighButton = new JoystickButton(m_operatorLeftJoystick, OIConstants.kElevatorPositionHigh);
   Joystick m_operatorRightJoystick = new Joystick(OIConstants.kRightJoystickControllerPort);//Arm
     JoystickButton m_toggleClawButton = new JoystickButton(m_operatorRightJoystick, OIConstants.kClawToggleButton);//Button for full open claw
     JoystickButton m_offClawButton = new JoystickButton(m_operatorRightJoystick, OIConstants.kClawOffButton);//Button for claw off, basically turns of the solonoids for the claw
@@ -91,7 +96,7 @@ public class RobotContainer {
     // Xbox controller button for holding the current position
     m_holdPosition.whileTrue(m_holdPositionCommand);//Runs while the button is pressed
     //Buttons for claw piston states based on the Operator's Joystick
-    m_toggleClawButton.onTrue(elevatorGoToPosition);//Triggers when the button is pressed
+    m_toggleClawButton.onTrue(m_toggleClawStateCommand);//Triggers when the button is pressed
     m_offClawButton.onTrue(m_offClawStateCommand);//Triggers when the button is pressed
     //Button for toggling the compressor
     m_toggleCompressorButton.onTrue(m_toggleCompressorCommand);//Triggers when the button is pressed
@@ -100,9 +105,13 @@ public class RobotContainer {
     m_retractWristButton.toggleOnTrue(m_retractWristCommand);//Triggers when the button is pressed
     //Button for getting the robot status
     m_robotStatusButton.onTrue(m_getRobotStatusCommand);
+    //Elevator buttons
+    m_elevatorLowButton.onTrue(elevatorLowPositionCommand);
+    m_elevatorMidButton.onTrue(elevatorMidPositionCommand);
+    m_elevatorHighButton.onTrue(elevatorHighPositionCommand);
     // Configure default commands
-    m_elevatorSubsystem.setDefaultCommand(new RunCommand(() -> m_elevatorSubsystem.setPower(m_operatorRightJoystick.getY()*m_operatorRightJoystick.getThrottle()),m_elevatorSubsystem));
-    m_armSubsystem.setDefaultCommand(new RunCommand(() -> m_armSubsystem.setPower(m_operatorLeftJoystick.getY()*m_operatorLeftJoystick.getThrottle()),m_armSubsystem));
+    m_elevatorSubsystem.setDefaultCommand(new RunCommand(() -> m_elevatorSubsystem.setPower(m_operatorLeftJoystick.getY()*m_operatorLeftJoystick.getThrottle()),m_elevatorSubsystem));
+    m_armSubsystem.setDefaultCommand(new RunCommand(() -> m_armSubsystem.setPower(m_operatorRightJoystick.getY()*m_operatorRightJoystick.getThrottle()),m_armSubsystem));
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.

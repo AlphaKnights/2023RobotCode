@@ -10,10 +10,12 @@ import frc.robot.subsystems.ElevatorSubsystem;
 
 public class ElevatorGoToPosition extends CommandBase {
   ElevatorSubsystem m_ElevatorSubsystem;
-  double numOfRot = 50;
-  double sensorPos = numOfRot* ElevatorConstants.kSensorCountPerRevolution;
+  private final double numOfRot;
+  private final double sensorPos;
   /** Creates a new ElevatorGoToPosition. */
-  public ElevatorGoToPosition(ElevatorSubsystem p_ElevatorSubsystem) {
+  public ElevatorGoToPosition(ElevatorSubsystem p_ElevatorSubsystem, double p_numOfRot) {
+    numOfRot = p_numOfRot;
+    sensorPos =  numOfRot* ElevatorConstants.kSensorCountPerRevolution;
     m_ElevatorSubsystem = p_ElevatorSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_ElevatorSubsystem);

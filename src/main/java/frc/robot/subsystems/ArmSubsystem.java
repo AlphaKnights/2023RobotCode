@@ -9,73 +9,161 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.NetworkTableConstants;
 
 public class ArmSubsystem extends SubsystemBase {
   //Config the falcon and the limit switches
-  TalonFX armFalcon = new TalonFX(ArmConstants.kArmFalconID);
-  TalonFXConfiguration armConfig = new TalonFXConfiguration();
+  TalonFX ArmFalcon = new TalonFX(ArmConstants.kArmFalconID);
+  TalonFXConfiguration ArmConfig = new TalonFXConfiguration();
   DigitalInput reverseLimit = new DigitalInput(ArmConstants.kLimitSwitchPort);
-
+  // DigitalInput forwardLimit = new DigitalInput(ArmConstants.kForwardLimitSwitchPort);
+  PIDController ArmPID = new PIDController(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
+  private double m_maxArmPosition = ArmConstants.kDefaultMaxFowardRotationCount;
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
-    //Sets Encoder limits
-    armConfig.forwardSoftLimitEnable = false;
-    armConfig.reverseSoftLimitEnable = false;
-    armConfig.forwardSoftLimitThreshold = ArmConstants.kFowardRotationCount;
-    armConfig.reverseSoftLimitThreshold = ArmConstants.kReverseRotationCount;
-    armFalcon.configAllSettings(armConfig);
-    armFalcon.setNeutralMode(NeutralMode.Brake);
-    armFalcon.setSelectedSensorPosition(ArmConstants.kReverseRotationCount);
-  }
+    ArmConfig.forwardSoftLimitEnable = true;
+    ArmConfig.reverseSoftLimitEnable = false;
+    ArmConfig.forwardSoftLimitThreshold = m_maxArmPosition;
+    ArmConfig.reverseSoftLimitThreshold = ArmConstants.kReverseRotationCount;
 
+    ArmConfig.slot0.kP = ArmConstants.kP;
+    ArmConfig.slot0.kI = ArmConstants.kI;
+    ArmConfig.slot0.kD = ArmConstants.kD;
+    ArmConfig.slot0.kF = ArmConstants.kF;
+    ArmConfig.slot0.integralZone = ArmConstants.kIZone;
+    ArmConfig.slot0.closedLoopPeakOutput = ArmConstants.kPeakOutput;
+    // ArmConfig.slot0.allowableClosedloopError = ArmConstants.kPositionTolerance;
+
+    ArmFalcon.configAllSettings(ArmConfig);
+    ArmFalcon.setNeutralMode(NeutralMode.Brake);
+    ArmFalcon.setSelectedSensorPosition(ArmConstants.kReverseRotationCount);
+    // ArmFalcon.config
+  }
+  int i = 1;
   @Override
   public void periodic() {
+    if(NetworkTableConstants.DEBUG){
+      if(i>=10){
+        System.out.println(ArmFalcon.getSelectedSensorPosition());
+        i = 1;
+      }
+      else{
+        i++;
+      }
+    }
+    // System.out.println(reverseLimit.get());
+
     // This method will be called once per scheduler run
   }
 
   /**
    * 
-   * @param p_power the power to set the arm to, between -1 and 1. It will refuse to move in the reverse direction if the limit switch is pressed.
+   * @param p_power the power to set the Arm to, between -1 and 1. It will refuse to move in the reverse direction if the limit switch is pressed.
    */
   public void setPower(double p_power) {
-    //Checks the limit switch and if triggered, sets the encoder to the reverse limit to the reverse limit and stops the motor
-    // if (reverseLimit.get()) {
-    //   if(p_power<0){
-    //     armFalcon.set(ControlMode.PercentOutput, 0);
-    //   }
-    //   armFalcon.set(ControlMode.PercentOutput, 0);
-    //   armFalcon.setSelectedSensorPosition(ArmConstants.kReverseRotationCount);
-    // } else {
-      armFalcon.set(ControlMode.PercentOutput, p_power);
-    // }
+    if (reverseLimit.get()) {
+      // System.out.println("Rvs Limit");
+      if(p_power<0){
+        ArmFalcon.set(ControlMode.PercentOutput, 0);
+      }
+      else{
+        ArmFalcon.set(ControlMode.PercentOutput, p_power);
+      }
+      ArmFalcon.setSelectedSensorPosition(ArmConstants.kReverseRotationCount);
+    } else if (ArmFalcon.getStatorCurrent()>ArmConstants.kStallCurrent){
+      // System.out.println("Fwd Limit");
+      if(p_power>0){
+        ArmFalcon.set(ControlMode.PercentOutput, 0);
+      }
+      else{
+        ArmFalcon.set(ControlMode.PercentOutput, p_power);
+      }
+      m_maxArmPosition = ArmFalcon.getSelectedSensorPosition();
+      ArmFalcon.configForwardSoftLimitThreshold(m_maxArmPosition);
+      // ArmFalcon.setSelectedSensorPosition(ArmConstants.kFowardRotationCount);
+    } else {
+     ArmFalcon.set(ControlMode.PercentOutput, p_power);
+    }
   }
 
   /**
    * 
-   * @param p_position the position to move the arm to, in encoder counts.
+   * @param p_position the position to move the Arm to, in encoder counts.
    */
   public void goToPosition(double p_position) {
-    //Checks the limit switch and if triggered, sets the encoder to the reverse limit to the reverse limit
-    if(reverseLimit.get()){
-      armFalcon.setSelectedSensorPosition(ArmConstants.kReverseRotationCount);
-    }
-    armFalcon.set(ControlMode.Position, p_position);
+    // if(reverseLimit.get()){
+    //   ArmFalcon.setSelectedSensorPosition(ArmConstants.kReverseRotationCount);
+    // }
+    // if(ArmFalcon.getSelectedSensorPosition()<p_position-10){
+    //   // ArmFalcon.set(ControlMode.PercentOutput, .5);
+    //   setPower(.5);
+    // }
+    // else if(ArmFalcon.getSelectedSensorPosition()>p_position+10){
+    //   // ArmFalcon.set(ControlMode.PercentOutput, .5);
+    //   setPower(-.5);
+    // }
+    // ArmFalcon.set(ControlMode.MotionMagic, p_position);
+    setPower(MathUtil.clamp(ArmPID.calculate(ArmFalcon.getSelectedSensorPosition(), p_position*ArmConstants.kF),-1*ArmConstants.kPeakOutput,ArmConstants.kPeakOutput));
+    // ArmFalcon.set(ControlMode.Position, p_position);
   }
-  
-  /**
-   * Gets the arm Falcon object, for debugging use only.
-   */
-  public TalonFX getArmFalcon(){
-    return armFalcon;
+
+  public boolean homeElevator(){
+    if(homeElevatorBottom()){
+      return homeElevatorTop();
+    }
+    else{
+      return homeElevatorBottom();
+    }
+  }
+
+  public boolean homeElevatorBottom(){
+    if(reverseLimit.get()){
+      ArmFalcon.setSelectedSensorPosition(ArmConstants.kReverseRotationCount);
+      setPower(0);
+      return true;
+    }
+    else{
+      setPower(-.5);
+      return false;
+    }
+  }
+
+  public boolean homeElevatorTop(){
+    if(ArmFalcon.getStatorCurrent()>ArmConstants.kStallCurrent){
+      ArmFalcon.configForwardSoftLimitThreshold(ArmFalcon.getSelectedSensorPosition());
+      setPower(0);
+      return true;
+    }
+    else{
+      setPower(.5);
+      return false;
+    }
   }
 
   /**
-   * Gets the arm limit switch object, for debugging use only.
+   * 
+   * @param p_position the position to move the Arm to, in encoder counts.
    */
-  public DigitalInput getLimitSwitch(){
+  public double getPosition() {
+    return ArmFalcon.getSelectedSensorPosition();
+  }
+  
+  /**
+   * Gets the Arm Falcon object, for debugging use only.
+   */
+  public TalonFX getArmFalcon() {
+    return ArmFalcon;
+  }
+
+  /**
+   * Gets the Arm limit switch object, for debugging use only.
+   */
+  public DigitalInput getLimitSwitch() {
     return reverseLimit;
   }
 }

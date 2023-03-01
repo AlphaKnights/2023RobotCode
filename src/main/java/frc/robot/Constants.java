@@ -39,6 +39,9 @@ public final class Constants {
     public static final int kLeftJoystickControllerPort = 1; // Default port for the left flight joystick
     public static final double kLeftJoystickDeadband = 0.05; // Deadband for the left flight joystick
     public static final int kRobotStatusButton = 1; // Trigger Button
+    public static final int kElevatorPositionLow = 7; // Button 7 - Low Position
+    public static final int kElevatorPositionMid = 8; // Button 8 - Mid Position
+    public static final int kElevatorPositionHigh = 9; // Button 9 - High Position
     //Right Flight Stick
     public static final int kRightJoystickControllerPort = 2; // Default port for the right flight joystick
     public static final double kRightJoystickDeadband = 0.05; // Deadband for the right flight joystick
@@ -103,23 +106,45 @@ public final class Constants {
 
   public static final class ElevatorConstants{
     public static final double kSensorCountPerRevolution = 2048;
-    public static final double kMaxFowardVerticalRotation = 135;// Up
-    public static final double kMaxReverseVerticalRotation = 0; //Down, set to 0 as it starts in the fully down state so it starts in pos 0
-    public static final double kFowardVerticalCount = kMaxFowardVerticalRotation*kSensorCountPerRevolution;
-    public static final double kReverseVerticalCount = kMaxReverseVerticalRotation*kSensorCountPerRevolution;
+    public static final double kDefaultMaxFowardVerticalRotation = 135;// Up
+    public static final double kDefaultFowardVerticalCount = kDefaultMaxFowardVerticalRotation*kSensorCountPerRevolution;
+    public static final double kMaxReverseVerticalRotationCount = 0; //Down, set to 0 as it starts in the fully down state so it starts in pos 0
     public static final int kElevatorFalconID = 3;
     public static final int kReverseLimitSwitchPort = 0;
     public static final int kForwardLimitSwitchPort = 1;
+
+    public static final double kP = 0.06277;
+    public static final double kI = 0;
+    public static final double kD = 0;
+    public static final double kF = 0.049286;
+    public static final double kIZone = 0;
+
+    public static final double kPeakOutput = 0.5;
+
+    public static final double kPositionTolerance = 0.1;
+    //Rotations for the spool to get to position, max height is 141 rotations
+    public static final double kElevatorLowPosition = 25;
+    public static final double kElevatorMidPosition = 50;
+    public static final double kElevatorHighPosition = 100;
   }
 
   public static final class ArmConstants{
     public static final double kSensorCountPerRevolution = 2048; //288036.0
-    public static final double kMaxFowardRotation = 250;// Out
-    public static final double kMaxReverseRotation = 200; //In, starts fully in so it starts in pos 0
-    public static final double kFowardRotationCount = kMaxFowardRotation*kSensorCountPerRevolution;
+    public static final double kDefaultMaxFowardRotation = 250;// Out
+    public static final double kMaxReverseRotation = 0; //In, starts fully in so it starts in pos 0
+    public static final double kDefaultMaxFowardRotationCount = kDefaultMaxFowardRotation*kSensorCountPerRevolution;
     public static final double kReverseRotationCount = kMaxReverseRotation*kSensorCountPerRevolution;
     public static final int kArmFalconID = 4;
     public static final int kLimitSwitchPort = 2;
+
+    public static final double kP = 0.06277;
+    public static final double kI = 0;
+    public static final double kD = 0;
+    public static final double kF = 0.049286;
+    public static final double kIZone = 0;
+
+    public static final double kPeakOutput = 0.5;
+    public static final double kStallCurrent = 50;
   }
 
   public static final class PneumaticConstants{

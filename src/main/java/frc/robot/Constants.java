@@ -49,7 +49,7 @@ public final class Constants {
     public static final int kRetractWristButton = 12; // Button 12
 
     //Speed Limiters:
-    public static final double kJoystickInput = 0.5;
+    public static final double kJoystickInput = 1;
   }
 
   public static final class DriveConstants {
@@ -103,8 +103,8 @@ public final class Constants {
 
   public static final class ElevatorConstants{
     public static final double kSensorCountPerRevolution = 2048;
-    public static final double kMaxFowardVerticalRotation = 250;// Up
-    public static final double kMaxReverseVerticalRotation = 200; //Down, set to 0 as it starts in the fully down state so it starts in pos 0
+    public static final double kMaxFowardVerticalRotation = 135;// Up
+    public static final double kMaxReverseVerticalRotation = 0; //Down, set to 0 as it starts in the fully down state so it starts in pos 0
     public static final double kFowardVerticalCount = kMaxFowardVerticalRotation*kSensorCountPerRevolution;
     public static final double kReverseVerticalCount = kMaxReverseVerticalRotation*kSensorCountPerRevolution;
     public static final int kElevatorFalconID = 3;
@@ -113,7 +113,7 @@ public final class Constants {
   }
 
   public static final class ArmConstants{
-    public static final double kSensorCountPerRevolution = 2048;
+    public static final double kSensorCountPerRevolution = 2048; //288036.0
     public static final double kMaxFowardRotation = 250;// Out
     public static final double kMaxReverseRotation = 200; //In, starts fully in so it starts in pos 0
     public static final double kFowardRotationCount = kMaxFowardRotation*kSensorCountPerRevolution;
@@ -169,8 +169,9 @@ public final class Constants {
     public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
     // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15 teeth on the bevel pinion
     public static final double kDrivingMotorReduction = (45.0 * 22) / (kDrivingMotorPinionTeeth * 15);
-    public static final double kDriveWheelFreeSpeedRps = (kDrivingMotorFreeSpeedRps * kWheelCircumferenceMeters)
-        / kDrivingMotorReduction;
+    // public static final double kDriveWheelFreeSpeedRps = (kDrivingMotorFreeSpeedRps * kWheelCircumferenceMeters)
+    //     / kDrivingMotorReduction;
+    public static final double kDriveWheelFreeSpeedRps = 11;
 
     public static final double kDrivingEncoderPositionFactor = (kWheelDiameterMeters * Math.PI)
         / kDrivingMotorReduction; // meters

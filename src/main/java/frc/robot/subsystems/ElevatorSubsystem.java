@@ -21,7 +21,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   DigitalInput forwardLimit = new DigitalInput(ElevatorConstants.kForwardLimitSwitchPort);
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
-    elevatorConfig.forwardSoftLimitEnable = false;
+    elevatorConfig.forwardSoftLimitEnable = true;
     elevatorConfig.reverseSoftLimitEnable = false;
     elevatorConfig.forwardSoftLimitThreshold = ElevatorConstants.kFowardVerticalCount;
     elevatorConfig.reverseSoftLimitThreshold = ElevatorConstants.kReverseVerticalCount;
@@ -29,10 +29,18 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorFalcon.setNeutralMode(NeutralMode.Brake);
     elevatorFalcon.setSelectedSensorPosition(ElevatorConstants.kReverseVerticalCount);
   }
-
+  int i = 0;
   @Override
   public void periodic() {
+    if(i>48){
+      System.out.println(elevatorFalcon.getSelectedSensorPosition());
+      i = 0;
+    }
+    else{
+      i++;
+    }
     // System.out.println(reverseLimit.get());
+
     // This method will be called once per scheduler run
   }
 
@@ -41,16 +49,24 @@ public class ElevatorSubsystem extends SubsystemBase {
    * @param p_power the power to set the elevator to, between -1 and 1. It will refuse to move in the reverse direction if the limit switch is pressed.
    */
   public void setPower(double p_power) {
-    if (reverseLimit.get()&&false) {
+    if (reverseLimit.get()) {
+      // System.out.println("Rvs Limit");
       if(p_power<0){
         elevatorFalcon.set(ControlMode.PercentOutput, 0);
       }
+      else{
+        elevatorFalcon.set(ControlMode.PercentOutput, p_power);
+      }
       elevatorFalcon.setSelectedSensorPosition(ElevatorConstants.kReverseVerticalCount);
-    } else if (forwardLimit.get()&&false){
+    } else if (!forwardLimit.get()){
+      // System.out.println("Fwd Limit");
       if(p_power>0){
         elevatorFalcon.set(ControlMode.PercentOutput, 0);
       }
-      elevatorFalcon.setSelectedSensorPosition(ElevatorConstants.kReverseVerticalCount);
+      else{
+        elevatorFalcon.set(ControlMode.PercentOutput, p_power);
+      }
+      // elevatorFalcon.setSelectedSensorPosition(ElevatorConstants.kFowardVerticalCount);
     } else {
      elevatorFalcon.set(ControlMode.PercentOutput, p_power);
     }
@@ -61,10 +77,25 @@ public class ElevatorSubsystem extends SubsystemBase {
    * @param p_position the position to move the elevator to, in encoder counts.
    */
   public void goToPosition(double p_position) {
-    if(reverseLimit.get()){
-      elevatorFalcon.setSelectedSensorPosition(ElevatorConstants.kReverseVerticalCount);
+    // if(reverseLimit.get()){
+    //   elevatorFalcon.setSelectedSensorPosition(ElevatorConstants.kReverseVerticalCount);
+    // }
+    if(elevatorFalcon.getSelectedSensorPosition()<p_position-10){
+      // elevatorFalcon.set(ControlMode.PercentOutput, .5);
+      setPower(.5);
     }
-    elevatorFalcon.set(ControlMode.Position, p_position);
+    else if(elevatorFalcon.getSelectedSensorPosition()>p_position+10){
+      // elevatorFalcon.set(ControlMode.PercentOutput, .5);
+      setPower(-.5);
+    }
+    // elevatorFalcon.set(ControlMode.Position, p_position);
+  }
+  /**
+   * 
+   * @param p_position the position to move the elevator to, in encoder counts.
+   */
+  public double getPosition() {
+    return elevatorFalcon.getSelectedSensorPosition();
   }
   
   /**

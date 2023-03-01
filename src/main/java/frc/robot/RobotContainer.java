@@ -21,6 +21,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.PistonState;
 import frc.robot.commands.ChangePistonStateCommand;
+import frc.robot.commands.ElevatorGoToPosition;
 import frc.robot.commands.ExtendWristCommand;
 import frc.robot.commands.GetRobotStatusCommand;
 import frc.robot.commands.HoldPositionCommand;
@@ -64,6 +65,7 @@ public class RobotContainer {
   //Robot Status
   private final GetRobotStatusCommand m_getRobotStatusCommand = new GetRobotStatusCommand(m_armSubsystem, m_robotDrive, m_elevatorSubsystem, m_pneumaticsSubsystem);
 
+  private final ElevatorGoToPosition elevatorGoToPosition = new ElevatorGoToPosition(m_elevatorSubsystem);
   // The driver's controller - driver drives the robot
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
     JoystickButton m_zeroButton = new JoystickButton(m_driverController, OIConstants.kNavXZeroButton);
@@ -89,7 +91,7 @@ public class RobotContainer {
     // Xbox controller button for holding the current position
     m_holdPosition.whileTrue(m_holdPositionCommand);//Runs while the button is pressed
     //Buttons for claw piston states based on the Operator's Joystick
-    m_toggleClawButton.onTrue(m_toggleClawStateCommand);//Triggers when the button is pressed
+    m_toggleClawButton.onTrue(elevatorGoToPosition);//Triggers when the button is pressed
     m_offClawButton.onTrue(m_offClawStateCommand);//Triggers when the button is pressed
     //Button for toggling the compressor
     m_toggleCompressorButton.onTrue(m_toggleCompressorCommand);//Triggers when the button is pressed

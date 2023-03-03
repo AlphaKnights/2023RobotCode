@@ -11,9 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
@@ -27,14 +25,25 @@ public class ArmSubsystem extends SubsystemBase {
   // DigitalInput forwardLimit = new DigitalInput(ArmConstants.kForwardLimitSwitchPort);
   PIDController ArmPID = new PIDController(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
   private double m_maxArmPosition = ArmConstants.kDefaultMaxFowardRotationCount;
-  NetworkTableEntry armPEntry = NetworkTableConstants.kArmTable.getEntry("ArmP");
-  NetworkTableEntry armIEntry = NetworkTableConstants.kArmTable.getEntry("ArmI");
-  NetworkTableEntry armDEntry = NetworkTableConstants.kArmTable.getEntry("ArmD");
+  NetworkTableEntry armPEntry = NetworkTableConstants.kArmTable.getEntry("P");
+  NetworkTableEntry armIEntry = NetworkTableConstants.kArmTable.getEntry("I");
+  NetworkTableEntry armDEntry = NetworkTableConstants.kArmTable.getEntry("D");
+  NetworkTableEntry armFwdLimit = NetworkTableConstants.kArmTable.getEntry("FwdLimit");
+  NetworkTableEntry armRvsLimit = NetworkTableConstants.kArmTable.getEntry("RvsLimit");
+  NetworkTableEntry armPosition = NetworkTableConstants.kArmTable.getEntry("Position");
+  NetworkTableEntry armPower = NetworkTableConstants.kArmTable.getEntry("Power");
+  NetworkTableEntry ingoreArmFwdLimit = NetworkTableConstants.kArmTable.getEntry("IngoreFwdLimit");
+
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
     armPEntry.setDefaultDouble(ArmConstants.kP);
     armIEntry.setDefaultDouble(ArmConstants.kI);
     armDEntry.setDefaultDouble(ArmConstants.kD);
+    armFwdLimit.setDefaultBoolean(false);
+    armRvsLimit.setDefaultBoolean(false);
+    armPosition.setDefaultDouble(ArmConstants.kReverseRotationCount);
+    armPower.setDefaultDouble(0);
+    ingoreArmFwdLimit.setDefaultBoolean(false);
     ArmConfig.forwardSoftLimitEnable = true;
     ArmConfig.reverseSoftLimitEnable = false;
     ArmConfig.forwardSoftLimitThreshold = m_maxArmPosition;
@@ -57,19 +66,19 @@ public class ArmSubsystem extends SubsystemBase {
   int j = 1;
   @Override
   public void periodic() {
-    if(NetworkTableConstants.DEBUG){
-      // System.out.println(ArmPIDEntry.getDouble(0.0));
+    armFwdLimit.setBoolean(ArmFalcon.getStatorCurrent()>ArmConstants.kStallCurrent);
+    armRvsLimit.setBoolean(reverseLimit.get());
+    armPosition.setDouble(ArmFalcon.getSelectedSensorPosition()/ArmConstants.kSensorCountPerRevolution);
+    armPower.setDouble(ArmFalcon.getStatorCurrent());
+    // if(NetworkTableConstants.DEBUG){
       // if(i>=25){
-      //   // System.out.println(ArmFalcon.getSelectedSensorPosition());
       //   i = 1;
       // }
       // else{
       //   i++;
       // }
-    }
-    // System.out.println(reverseLimit.get());
+    // }
 
-    // This method will be called once per scheduler run
   }
 
   /**
@@ -87,22 +96,15 @@ public class ArmSubsystem extends SubsystemBase {
         ArmFalcon.set(ControlMode.PercentOutput, p_power);
       }
       ArmFalcon.setSelectedSensorPosition(ArmConstants.kReverseRotationCount);
-    } else if (ArmFalcon.getStatorCurrent()>ArmConstants.kStallCurrent){
-      // System.out.println("Fwd Limit");
+    } else if (ArmFalcon.getStatorCurrent()>ArmConstants.kStallCurrent&&!ingoreArmFwdLimit.getBoolean(false)){
       if(p_power<0){
         ArmFalcon.set(ControlMode.PercentOutput, 0);
-        // System.out.println("Limit");
         m_maxArmPosition = ArmFalcon.getSelectedSensorPosition();
-        // ArmFalcon.configForwardSoftLimitThreshold(m_maxArmPosition);
         
       }
       else{
-        // System.out.println(
-        //   "ig"
-        // );
         ArmFalcon.set(ControlMode.PercentOutput, p_power);
       }
-      // ArmFalcon.setSelectedSensorPosition(ArmConstants.kFowardRotationCount);
     } else {
      ArmFalcon.set(ControlMode.PercentOutput, p_power);
     }

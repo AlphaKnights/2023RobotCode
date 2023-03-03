@@ -40,6 +40,7 @@ public final class Constants {
     public static final int kNavXZeroButton = 1;
     public static final int kResetEncodersButton = 2;
     public static final int kHoldPositionButton = 3;
+    public static final int kAutoBalanceButton = 4;
     //Left Flight Stick
     public static final int kLeftJoystickControllerPort = 1; // Default port for the left flight joystick
     public static final double kLeftJoystickDeadband = 0.05; // Deadband for the left flight joystick
@@ -163,7 +164,10 @@ public final class Constants {
     public static final int kAnalogSensorPort = 0;
   }
 
-  
+  public static final class BalanceConstants {
+    public static final double fieldAltitude = 0;
+    public static final double altitudeError = 1;
+  }
 
   public static enum PistonState {
     OPEN, CLOSED, OFF

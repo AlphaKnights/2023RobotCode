@@ -16,12 +16,11 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
-// import frc.robot.Constants.BalanceConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.PistonState;
-// import frc.robot.commands.Doc;
+import frc.robot.commands.AutoLevel;
 import frc.robot.commands.ChangePistonStateCommand;
 import frc.robot.commands.ElevatorGoToPosition;
 import frc.robot.commands.ExtendWristCommand;
@@ -57,7 +56,7 @@ public class RobotContainer {
   //Robot's Commands
   //NavX
   private final NavXZeroCommand m_zeroCommand = new NavXZeroCommand(m_robotDrive);
-  // private final Doc m_docCommand = new Doc(m_robotDrive);
+  private final AutoLevel m_autoLevel = new AutoLevel(m_robotDrive);
   //Pneumatics
   private final ChangePistonStateCommand m_offClawStateCommand = new ChangePistonStateCommand(PistonState.OFF, m_pneumaticsSubsystem);
   private final TogglePistonStateCommand m_toggleClawStateCommand = new TogglePistonStateCommand(m_pneumaticsSubsystem);
@@ -83,7 +82,7 @@ public class RobotContainer {
     JoystickButton m_elevatorLowButton = new JoystickButton(m_operatorLeftJoystick, OIConstants.kElevatorPositionLow);
     JoystickButton m_elevatorMidButton = new JoystickButton(m_operatorLeftJoystick, OIConstants.kElevatorPositionMid);
     JoystickButton m_elevatorHighButton = new JoystickButton(m_operatorLeftJoystick, OIConstants.kElevatorPositionHigh);
-    // JoystickButton m_balanceButton = new JoystickButton(m_operatorLeftJoystick, BalanceConstants.balanceButton);
+    JoystickButton m_balanceButton = new JoystickButton(m_operatorLeftJoystick, OIConstants.kAutoBalanceButton);
   Joystick m_operatorRightJoystick = new Joystick(OIConstants.kRightJoystickControllerPort);//Arm
     JoystickButton m_toggleClawButton = new JoystickButton(m_operatorRightJoystick, OIConstants.kClawToggleButton);//Button for full open claw
     JoystickButton m_offClawButton = new JoystickButton(m_operatorRightJoystick, OIConstants.kClawOffButton);//Button for claw off, basically turns of the solonoids for the claw
@@ -115,7 +114,7 @@ public class RobotContainer {
     m_elevatorLowButton.toggleOnTrue(elevatorLowPositionCommand);
     m_elevatorMidButton.toggleOnTrue(elevatorMidPositionCommand);
     m_elevatorHighButton.toggleOnTrue(elevatorHighPositionCommand);
-    // m_balanceButton.onTrue(elevatorHighPositionCommand);
+    m_balanceButton.whileTrue(m_autoLevel);
     // Configure default commands
     m_elevatorSubsystem.setDefaultCommand(new RunCommand(() -> m_elevatorSubsystem.setPower(m_operatorLeftJoystick.getY()*m_operatorLeftJoystick.getThrottle()), m_elevatorSubsystem));
     m_armSubsystem.setDefaultCommand(new RunCommand(() -> m_armSubsystem.setPower(m_operatorRightJoystick.getY()*m_operatorRightJoystick.getThrottle()),m_armSubsystem));
@@ -192,6 +191,6 @@ public class RobotContainer {
     m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
+    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false)).andThen(m_autoLevel);
   }
 }

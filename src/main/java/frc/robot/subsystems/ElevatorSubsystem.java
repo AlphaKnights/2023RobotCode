@@ -9,11 +9,8 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
@@ -28,14 +25,23 @@ public class ElevatorSubsystem extends SubsystemBase {
   PIDController elevatorPID = new PIDController(ElevatorConstants.kP, ElevatorConstants.kI, ElevatorConstants.kD);
   private double m_maxElevatorVerticalPosition = ElevatorConstants.kDefaultMaxFowardVerticalRotation*ElevatorConstants.kSensorCountPerRevolution;
   
-  NetworkTableEntry elevatorPEntry = NetworkTableConstants.kElevatorTable.getEntry("ElevP");
-  NetworkTableEntry elevatorIEntry = NetworkTableConstants.kElevatorTable.getEntry("ElevI");
-  NetworkTableEntry elevatorDEntry = NetworkTableConstants.kElevatorTable.getEntry("ElevD");
+  NetworkTableEntry elevatorPEntry = NetworkTableConstants.kElevatorTable.getEntry("P");
+  NetworkTableEntry elevatorIEntry = NetworkTableConstants.kElevatorTable.getEntry("I");
+  NetworkTableEntry elevatorDEntry = NetworkTableConstants.kElevatorTable.getEntry("D");
+  NetworkTableEntry elevatorFwdLimit = NetworkTableConstants.kElevatorTable.getEntry("FwdLimit");
+  NetworkTableEntry elevatorRvsLimit = NetworkTableConstants.kElevatorTable.getEntry("RvsLimit");
+  NetworkTableEntry elevatorPosition = NetworkTableConstants.kElevatorTable.getEntry("Position");
+  NetworkTableEntry elevatorPower = NetworkTableConstants.kElevatorTable.getEntry("Power");
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
     elevatorPEntry.setDefaultDouble(ElevatorConstants.kP);
     elevatorIEntry.setDefaultDouble(ElevatorConstants.kI);
     elevatorDEntry.setDefaultDouble(ElevatorConstants.kD);
+    elevatorFwdLimit.setDefaultBoolean(false);
+    elevatorRvsLimit.setDefaultBoolean(false);
+    elevatorPosition.setDefaultDouble(ElevatorConstants.kMaxReverseVerticalRotationCount);
+    elevatorPower.setDefaultDouble(0);
+
     elevatorConfig.forwardSoftLimitEnable = true;
     elevatorConfig.reverseSoftLimitEnable = false;
     elevatorConfig.forwardSoftLimitThreshold = m_maxElevatorVerticalPosition;
@@ -57,19 +63,18 @@ public class ElevatorSubsystem extends SubsystemBase {
   int i = 1;
   @Override
   public void periodic() {
-    if(NetworkTableConstants.DEBUG){
-      if(i>=25){
-        // System.out.println(elevatorFalcon.getSelectedSensorPosition());
-        // System.out.println(forwardLimit.get());
-        i = 1;
-      }
-      else{
-        i++;
-      }
-    }
-    // System.out.println(reverseLimit.get());
-
-    // This method will be called once per scheduler run
+    // if(NetworkTableConstants.DEBUG){
+    //   if(i>=25){
+    //     i = 1;
+    //   }
+    //   else{
+    //     i++;
+    //   }
+    // }
+    elevatorFwdLimit.setBoolean(!forwardLimit.get());
+    elevatorRvsLimit.setBoolean(!reverseLimit.get());
+    elevatorPosition.setDouble(elevatorFalcon.getSelectedSensorPosition()/ElevatorConstants.kSensorCountPerRevolution);
+    elevatorPower.setDouble(elevatorFalcon.getStatorCurrent());
   }
 
   /**

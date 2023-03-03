@@ -33,6 +33,7 @@ public class ArmSubsystem extends SubsystemBase {
   NetworkTableEntry armPosition = NetworkTableConstants.kArmTable.getEntry("Position");
   NetworkTableEntry armPower = NetworkTableConstants.kArmTable.getEntry("Power");
   NetworkTableEntry ingoreArmFwdLimit = NetworkTableConstants.kArmTable.getEntry("IngoreFwdLimit");
+  NetworkTableEntry powerLimit = NetworkTableConstants.kArmTable.getEntry("PowerLimit");
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
@@ -44,6 +45,7 @@ public class ArmSubsystem extends SubsystemBase {
     armPosition.setDefaultDouble(ArmConstants.kReverseRotationCount);
     armPower.setDefaultDouble(0);
     ingoreArmFwdLimit.setDefaultBoolean(false);
+    powerLimit.setDefaultDouble(ArmConstants.kStallCurrent);
     ArmConfig.forwardSoftLimitEnable = true;
     ArmConfig.reverseSoftLimitEnable = false;
     ArmConfig.forwardSoftLimitThreshold = m_maxArmPosition;
@@ -96,7 +98,7 @@ public class ArmSubsystem extends SubsystemBase {
         ArmFalcon.set(ControlMode.PercentOutput, p_power);
       }
       ArmFalcon.setSelectedSensorPosition(ArmConstants.kReverseRotationCount);
-    } else if (ArmFalcon.getStatorCurrent()>ArmConstants.kStallCurrent&&!ingoreArmFwdLimit.getBoolean(false)){
+    } else if (ArmFalcon.getStatorCurrent()>powerLimit.getDouble(ArmConstants.kStallCurrent)&&!ingoreArmFwdLimit.getBoolean(false)){
       if(p_power<0){
         ArmFalcon.set(ControlMode.PercentOutput, 0);
         m_maxArmPosition = ArmFalcon.getSelectedSensorPosition();

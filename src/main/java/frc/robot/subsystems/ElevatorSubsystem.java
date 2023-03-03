@@ -133,39 +133,39 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public boolean homeElevator(){
-    return true;
-    // if(homeElevatorBottom()){
-    //   return homeElevatorTop();
-    // }
-    // else{
-    //   return homeElevatorBottom();
-    // }
+    // return true;
+    if(homeElevatorBottom()){
+      return homeElevatorTop();
+    }
+    else{
+      return homeElevatorBottom();
+    }
   }
 
   public boolean homeElevatorBottom(){
-    return true;
-    // if(reverseLimit.get()){
-    //   elevatorFalcon.setSelectedSensorPosition(ElevatorConstants.kMaxReverseVerticalRotationCount);
-    //   setPower(0);
-    //   return true;
-    // }
-    // else{
-    //   setPower(-.5);
-    //   return false;
-    // }
+    // return true;
+    if(reverseLimit.get()){
+      // elevatorFalcon.setSelectedSensorPosition(ElevatorConstants.kMaxReverseVerticalRotationCount);
+      // setPower(0);
+      return true;
+    }
+    else{
+      setPower(-.5);
+      return false;
+    }
   }
 
   public boolean homeElevatorTop(){
-    return true;
-    // if(forwardLimit.get()){
-    //   elevatorFalcon.configForwardSoftLimitThreshold(elevatorFalcon.getSelectedSensorPosition());
-    //   setPower(0);
-    //   return true;
-    // }
-    // else{
-    //   setPower(.5);
-    //   return false;
-    // }
+    // return true;
+    if(forwardLimit.get()){
+      elevatorFalcon.configForwardSoftLimitThreshold(elevatorFalcon.getSelectedSensorPosition());
+      setPower(0);
+      return true;
+    }
+    else{
+      setPower(.5);
+      return false;
+    }
   }
   /**
    * 

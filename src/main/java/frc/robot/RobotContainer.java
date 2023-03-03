@@ -25,6 +25,7 @@ import frc.robot.commands.ElevatorGoToPosition;
 import frc.robot.commands.ExtendWristCommand;
 import frc.robot.commands.GetRobotStatusCommand;
 import frc.robot.commands.HoldPositionCommand;
+import frc.robot.commands.HomeElevatorCommand;
 import frc.robot.commands.NavXZeroCommand;
 import frc.robot.commands.RetractWristCommand;
 import frc.robot.commands.ToggleCompressorCommand;
@@ -64,10 +65,11 @@ public class RobotContainer {
   private final HoldPositionCommand m_holdPositionCommand = new HoldPositionCommand(m_robotDrive);
   //Robot Status
   private final GetRobotStatusCommand m_getRobotStatusCommand = new GetRobotStatusCommand(m_armSubsystem, m_robotDrive, m_elevatorSubsystem, m_pneumaticsSubsystem);
-
+  //Elevator
   private final ElevatorGoToPosition elevatorLowPositionCommand = new ElevatorGoToPosition(m_elevatorSubsystem, ElevatorConstants.kElevatorLowPosition);
   private final ElevatorGoToPosition elevatorMidPositionCommand = new ElevatorGoToPosition(m_elevatorSubsystem, ElevatorConstants.kElevatorMidPosition);
   private final ElevatorGoToPosition elevatorHighPositionCommand = new ElevatorGoToPosition(m_elevatorSubsystem, ElevatorConstants.kElevatorHighPosition);
+  private final HomeElevatorCommand homeElevatorCommand = new HomeElevatorCommand(m_elevatorSubsystem);
   // The driver's controller - driver drives the robot
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
     JoystickButton m_zeroButton = new JoystickButton(m_driverController, OIConstants.kNavXZeroButton);
@@ -146,6 +148,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    homeElevatorCommand.schedule();
     // Create config for trajectory
     TrajectoryConfig config = new TrajectoryConfig(
         AutoConstants.kMaxSpeedMetersPerSecond,

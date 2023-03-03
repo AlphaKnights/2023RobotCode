@@ -90,6 +90,7 @@ public class ArmSubsystem extends SubsystemBase {
       // System.out.println("Fwd Limit");
       if(p_power>0){
         ArmFalcon.set(ControlMode.PercentOutput, 0);
+        System.out.println("Limit");
       }
       else{
         ArmFalcon.set(ControlMode.PercentOutput, p_power);

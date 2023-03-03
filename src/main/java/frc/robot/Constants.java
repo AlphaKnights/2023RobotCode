@@ -149,7 +149,7 @@ public final class Constants {
     public static final double kIZone = 0;
 
     public static final double kPeakOutput = 0.5;
-    public static final double kStallCurrent = 50;
+    public static final double kStallCurrent = 170;
   }
 
   public static final class PneumaticConstants{

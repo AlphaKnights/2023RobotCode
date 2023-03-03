@@ -254,6 +254,11 @@ public final class Constants {
   public static final class DriveMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
   }
+
+  public static final class BalanceConstants {
+    public static final double fieldAltitude = 0;
+    public static final double altitudeError = 1;
+  }
 }
 
 

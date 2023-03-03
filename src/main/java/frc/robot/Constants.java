@@ -149,7 +149,7 @@ public final class Constants {
     public static final double kIZone = 0;
 
     public static final double kPeakOutput = 0.5;
-    public static final double kStallCurrent = 170;
+    public static final double kStallCurrent = 10;
   }
 
   public static final class PneumaticConstants{
@@ -253,12 +253,6 @@ public final class Constants {
 
   public static final class DriveMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
-  }
-
-  public static final class BalanceConstants {
-    public static final double fieldAltitude = 0;
-    public static final double altitudeError = 1;
-    public static final int balanceButton = 12; // only temporary
   }
 }
 

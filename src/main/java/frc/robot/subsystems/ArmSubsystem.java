@@ -79,7 +79,8 @@ public class ArmSubsystem extends SubsystemBase {
   public void setPower(double p_power) {
     if (reverseLimit.get()) {
       // System.out.println("Rvs Limit");
-      if(p_power<0){
+      if(p_power>0){
+        // System.out.println("limit two");
         ArmFalcon.set(ControlMode.PercentOutput, 0);
       }
       else{
@@ -88,15 +89,19 @@ public class ArmSubsystem extends SubsystemBase {
       ArmFalcon.setSelectedSensorPosition(ArmConstants.kReverseRotationCount);
     } else if (ArmFalcon.getStatorCurrent()>ArmConstants.kStallCurrent){
       // System.out.println("Fwd Limit");
-      if(p_power>0){
+      if(p_power<0){
         ArmFalcon.set(ControlMode.PercentOutput, 0);
-        System.out.println("Limit");
+        // System.out.println("Limit");
+        m_maxArmPosition = ArmFalcon.getSelectedSensorPosition();
+        // ArmFalcon.configForwardSoftLimitThreshold(m_maxArmPosition);
+        
       }
       else{
+        // System.out.println(
+        //   "ig"
+        // );
         ArmFalcon.set(ControlMode.PercentOutput, p_power);
       }
-      m_maxArmPosition = ArmFalcon.getSelectedSensorPosition();
-      ArmFalcon.configForwardSoftLimitThreshold(m_maxArmPosition);
       // ArmFalcon.setSelectedSensorPosition(ArmConstants.kFowardRotationCount);
     } else {
      ArmFalcon.set(ControlMode.PercentOutput, p_power);

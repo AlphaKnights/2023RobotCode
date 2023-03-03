@@ -106,11 +106,11 @@ public class RobotContainer {
     //Button for getting the robot status
     m_robotStatusButton.onTrue(m_getRobotStatusCommand);
     //Elevator buttons
-    m_elevatorLowButton.onTrue(elevatorLowPositionCommand);
-    m_elevatorMidButton.onTrue(elevatorMidPositionCommand);
-    m_elevatorHighButton.onTrue(elevatorHighPositionCommand);
+    m_elevatorLowButton.toggleOnTrue(elevatorLowPositionCommand);
+    m_elevatorMidButton.toggleOnTrue(elevatorMidPositionCommand);
+    m_elevatorHighButton.toggleOnTrue(elevatorHighPositionCommand);
     // Configure default commands
-    m_elevatorSubsystem.setDefaultCommand(new RunCommand(() -> m_elevatorSubsystem.setPower(m_operatorLeftJoystick.getY()*m_operatorLeftJoystick.getThrottle()),m_elevatorSubsystem));
+    m_elevatorSubsystem.setDefaultCommand(new RunCommand(() -> m_elevatorSubsystem.setPower(m_operatorLeftJoystick.getY()*m_operatorLeftJoystick.getThrottle()), m_elevatorSubsystem));
     m_armSubsystem.setDefaultCommand(new RunCommand(() -> m_armSubsystem.setPower(m_operatorRightJoystick.getY()*m_operatorRightJoystick.getThrottle()),m_armSubsystem));
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.

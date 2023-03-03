@@ -11,6 +11,9 @@ import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
@@ -23,9 +26,16 @@ public class ElevatorSubsystem extends SubsystemBase {
   DigitalInput reverseLimit = new DigitalInput(ElevatorConstants.kReverseLimitSwitchPort);
   DigitalInput forwardLimit = new DigitalInput(ElevatorConstants.kForwardLimitSwitchPort);
   PIDController elevatorPID = new PIDController(ElevatorConstants.kP, ElevatorConstants.kI, ElevatorConstants.kD);
-  private double m_maxElevatorVerticalPosition = ElevatorConstants.kDefaultMaxFowardVerticalRotation;
+  private double m_maxElevatorVerticalPosition = ElevatorConstants.kDefaultMaxFowardVerticalRotation*ElevatorConstants.kSensorCountPerRevolution;
+  
+  NetworkTableEntry elevatorPEntry = NetworkTableConstants.kElevatorTable.getEntry("ElevP");
+  NetworkTableEntry elevatorIEntry = NetworkTableConstants.kElevatorTable.getEntry("ElevI");
+  NetworkTableEntry elevatorDEntry = NetworkTableConstants.kElevatorTable.getEntry("ElevD");
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
+    elevatorPEntry.setDefaultDouble(ElevatorConstants.kP);
+    elevatorIEntry.setDefaultDouble(ElevatorConstants.kI);
+    elevatorDEntry.setDefaultDouble(ElevatorConstants.kD);
     elevatorConfig.forwardSoftLimitEnable = true;
     elevatorConfig.reverseSoftLimitEnable = false;
     elevatorConfig.forwardSoftLimitThreshold = m_maxElevatorVerticalPosition;
@@ -48,8 +58,9 @@ public class ElevatorSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     if(NetworkTableConstants.DEBUG){
-      if(i>=10){
-        System.out.println(elevatorFalcon.getSelectedSensorPosition());
+      if(i>=25){
+        // System.out.println(elevatorFalcon.getSelectedSensorPosition());
+        // System.out.println(forwardLimit.get());
         i = 1;
       }
       else{
@@ -67,6 +78,7 @@ public class ElevatorSubsystem extends SubsystemBase {
    */
   public void setPower(double p_power) {
     if (reverseLimit.get()) {
+      // System.out.println("Rev");
       if(p_power<0){
         elevatorFalcon.set(ControlMode.PercentOutput, 0);
       }
@@ -75,6 +87,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       }
       elevatorFalcon.setSelectedSensorPosition(ElevatorConstants.kMaxReverseVerticalRotationCount);
     } else if (!forwardLimit.get()){//Normally Open, so if it's not pressed, it's true
+      // System.out.println("Fwd");
       if(p_power>0){
         elevatorFalcon.set(ControlMode.PercentOutput, 0);
       }
@@ -87,11 +100,19 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
   }
 
+  public void goToPosition(){
+    System.out.println(elevatorPID.calculate(elevatorFalcon.getSelectedSensorPosition()));
+  }
+
   /**
    * 
    * @param p_position the position to move the elevator to, in encoder counts.
    */
-  public void goToPosition(double p_position) {
+  public void setToPosition(double p_position) {
+    elevatorPID.setP(elevatorPEntry.getDouble(ElevatorConstants.kP));
+    elevatorPID.setI(elevatorIEntry.getDouble(ElevatorConstants.kI));
+    elevatorPID.setD(elevatorDEntry.getDouble(ElevatorConstants.kD));
+    // elevatorPID.
     // if(reverseLimit.get()){
     //   elevatorFalcon.setSelectedSensorPosition(ElevatorConstants.kReverseVerticalCount);
     // }
@@ -104,41 +125,47 @@ public class ElevatorSubsystem extends SubsystemBase {
     //   setPower(-.5);
     // }
     // elevatorFalcon.set(ControlMode.MotionMagic, p_position);
-    setPower(MathUtil.clamp(elevatorPID.calculate(elevatorFalcon.getSelectedSensorPosition(), p_position*ElevatorConstants.kF),-1*ElevatorConstants.kPeakOutput,ElevatorConstants.kPeakOutput));
+    System.out.println(elevatorPID.calculate(elevatorFalcon.getSelectedSensorPosition(), p_position));
+    // elevatorPID.
+    // elevatorFalcon.set(ControlMode.Position, elevatorPID.calculate(elevatorFalcon.getSelectedSensorPosition(), p_position*ElevatorConstants.kF));
+    // setPower(MathUtil.clamp(,-1*ElevatorConstants.kPeakOutput,ElevatorConstants.kPeakOutput));
     // elevatorFalcon.set(ControlMode.Position, p_position);
   }
 
   public boolean homeElevator(){
-    if(homeElevatorBottom()){
-      return homeElevatorTop();
-    }
-    else{
-      return homeElevatorBottom();
-    }
+    return true;
+    // if(homeElevatorBottom()){
+    //   return homeElevatorTop();
+    // }
+    // else{
+    //   return homeElevatorBottom();
+    // }
   }
 
   public boolean homeElevatorBottom(){
-    if(reverseLimit.get()){
-      elevatorFalcon.setSelectedSensorPosition(ElevatorConstants.kMaxReverseVerticalRotationCount);
-      setPower(0);
-      return true;
-    }
-    else{
-      setPower(-.5);
-      return false;
-    }
+    return true;
+    // if(reverseLimit.get()){
+    //   elevatorFalcon.setSelectedSensorPosition(ElevatorConstants.kMaxReverseVerticalRotationCount);
+    //   setPower(0);
+    //   return true;
+    // }
+    // else{
+    //   setPower(-.5);
+    //   return false;
+    // }
   }
 
   public boolean homeElevatorTop(){
-    if(forwardLimit.get()){
-      elevatorFalcon.configForwardSoftLimitThreshold(elevatorFalcon.getSelectedSensorPosition());
-      setPower(0);
-      return true;
-    }
-    else{
-      setPower(.5);
-      return false;
-    }
+    return true;
+    // if(forwardLimit.get()){
+    //   elevatorFalcon.configForwardSoftLimitThreshold(elevatorFalcon.getSelectedSensorPosition());
+    //   setPower(0);
+    //   return true;
+    // }
+    // else{
+    //   setPower(.5);
+    //   return false;
+    // }
   }
   /**
    * 

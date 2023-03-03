@@ -11,6 +11,9 @@ import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
@@ -24,8 +27,14 @@ public class ArmSubsystem extends SubsystemBase {
   // DigitalInput forwardLimit = new DigitalInput(ArmConstants.kForwardLimitSwitchPort);
   PIDController ArmPID = new PIDController(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
   private double m_maxArmPosition = ArmConstants.kDefaultMaxFowardRotationCount;
+  NetworkTableEntry armPEntry = NetworkTableConstants.kArmTable.getEntry("ArmP");
+  NetworkTableEntry armIEntry = NetworkTableConstants.kArmTable.getEntry("ArmI");
+  NetworkTableEntry armDEntry = NetworkTableConstants.kArmTable.getEntry("ArmD");
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
+    armPEntry.setDefaultDouble(ArmConstants.kP);
+    armIEntry.setDefaultDouble(ArmConstants.kI);
+    armDEntry.setDefaultDouble(ArmConstants.kD);
     ArmConfig.forwardSoftLimitEnable = true;
     ArmConfig.reverseSoftLimitEnable = false;
     ArmConfig.forwardSoftLimitThreshold = m_maxArmPosition;
@@ -45,16 +54,18 @@ public class ArmSubsystem extends SubsystemBase {
     // ArmFalcon.config
   }
   int i = 1;
+  int j = 1;
   @Override
   public void periodic() {
     if(NetworkTableConstants.DEBUG){
-      if(i>=10){
-        System.out.println(ArmFalcon.getSelectedSensorPosition());
-        i = 1;
-      }
-      else{
-        i++;
-      }
+      // System.out.println(ArmPIDEntry.getDouble(0.0));
+      // if(i>=25){
+      //   // System.out.println(ArmFalcon.getSelectedSensorPosition());
+      //   i = 1;
+      // }
+      // else{
+      //   i++;
+      // }
     }
     // System.out.println(reverseLimit.get());
 
@@ -96,6 +107,9 @@ public class ArmSubsystem extends SubsystemBase {
    * @param p_position the position to move the Arm to, in encoder counts.
    */
   public void goToPosition(double p_position) {
+    ArmPID.setP(armPEntry.getDouble(ArmConstants.kP));
+    ArmPID.setI(armIEntry.getDouble(ArmConstants.kI));
+    ArmPID.setD(armDEntry.getDouble(ArmConstants.kD));
     // if(reverseLimit.get()){
     //   ArmFalcon.setSelectedSensorPosition(ArmConstants.kReverseRotationCount);
     // }

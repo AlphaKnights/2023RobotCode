@@ -10,6 +10,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -26,6 +28,9 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
   public static final class NetworkTableConstants{
     public static final boolean DEBUG = true;
+    public static final NetworkTableInstance kNetworkTableInstance = NetworkTableInstance.getDefault();
+    public static final NetworkTable kElevatorTable = kNetworkTableInstance.getTable("Elevator");
+    public static final NetworkTable kArmTable = kNetworkTableInstance.getTable("Arm");
   }
 
   public static final class OIConstants {
@@ -119,7 +124,7 @@ public final class Constants {
     public static final double kF = 0.049286;
     public static final double kIZone = 0;
 
-    public static final double kPeakOutput = 0.5;
+    public static final double kPeakOutput = 0.2;
 
     public static final double kPositionTolerance = 0.1;
     //Rotations for the spool to get to position, max height is 141 rotations

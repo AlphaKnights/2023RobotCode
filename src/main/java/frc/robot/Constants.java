@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -31,6 +32,8 @@ public final class Constants {
     public static final NetworkTableInstance kNetworkTableInstance = NetworkTableInstance.getDefault();
     public static final NetworkTable kElevatorTable = kNetworkTableInstance.getTable("Elevator");
     public static final NetworkTable kArmTable = kNetworkTableInstance.getTable("Arm");
+    public static final NetworkTable kDriveTable = kNetworkTableInstance.getTable("Drive");
+    public static final NetworkTable kPneumaticTable = kNetworkTableInstance.getTable("Pneumatic");
   }
 
   public static final class OIConstants {
@@ -59,6 +62,11 @@ public final class Constants {
 
     //Speed Limiters:
     public static final double kJoystickInput = 1;
+  }
+
+  public static final class VisionConstants {
+    public static final String kCameraName = "myCamera";
+    public static final Transform3d kCameraOffset = new Transform3d();
   }
 
   public static final class DriveConstants {

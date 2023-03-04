@@ -14,8 +14,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.util.WPIUtilJNI;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.NetworkTableConstants;
 import frc.utils.SwerveUtils;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -53,6 +55,11 @@ public class DriveSubsystem extends SubsystemBase {
   private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
+  private NetworkTableEntry m_xSpeedEntry = NetworkTableConstants.kDriveTable.getEntry("xSpeed");
+  private NetworkTableEntry m_ySpeedEntry = NetworkTableConstants.kDriveTable.getEntry("ySpeed");
+  private NetworkTableEntry m_rotSpeedEntry = NetworkTableConstants.kDriveTable.getEntry("rotSpeed");
+  private NetworkTableEntry m_gyroHeadingEntry = NetworkTableConstants.kDriveTable.getEntry("gyroHeading");
+
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
       DriveConstants.kDriveKinematics,
@@ -66,11 +73,19 @@ public class DriveSubsystem extends SubsystemBase {
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
+    //Initialize the network table entries with the default values
+    m_xSpeedEntry.setDouble(0.0);
+    m_ySpeedEntry.setDouble(0.0);
+    m_rotSpeedEntry.setDouble(0.0);
+    // m_rateLimitEntry.setBoolean(false);
+    m_gyroHeadingEntry.setDouble(0.0);
     // m_gyro.setAngleAdjustment(-180);
   }
 
   @Override
   public void periodic() {
+    m_gyroHeadingEntry.setDouble(m_gyro.getAngle());
+    m_xSpeedEntry.setDouble(m_currentTranslationDir);
     // Update the odometry in the periodic block
     // System.out.println(getHeading());
     m_odometry.update(
@@ -176,7 +191,9 @@ public class DriveSubsystem extends SubsystemBase {
     double xSpeedDelivered = xSpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
     double ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
     double rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
-
+    m_xSpeedEntry.setDouble(xSpeedDelivered);
+    m_ySpeedEntry.setDouble(ySpeedDelivered);
+    m_rotSpeedEntry.setDouble(rotDelivered);
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, Rotation2d.fromDegrees(-m_gyro.getAngle()))
@@ -192,7 +209,7 @@ public class DriveSubsystem extends SubsystemBase {
   /**
    * Sets the wheels into an X formation to prevent movement.
    */
-  public void setX() {
+  public void setXFormation() {
     m_frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
     m_frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
     m_rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));

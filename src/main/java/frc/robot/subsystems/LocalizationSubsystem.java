@@ -44,24 +44,18 @@ public class LocalizationSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
+    getEstimatedGlobalPose(new Pose2d());
 		// This method will be called once per scheduler run
 	}
 
     /** Creates a new Vision command object **/
     public static void PoseEstimator() {
-        // Initialize PhotonVision Camera
-        // gettings data from a PhotonCamera - have not completed
-        // https://docs.photonvision.org/en/latest/docs/programming/photonlib/getting-target-data.html#constructing-a-photoncamera
         photonCamera = new PhotonCamera(VisionConstants.kCameraName);
-            // Attempt to load the AprilTagFieldLayout that will tell us where the tags are on the field.
-            // Create PhotonVision pose estimator; PoseStrategy is subject to change
 			//fieldLayout.getTagPose(2).get().toPose2d();
             photonPoseEstimator = new PhotonPoseEstimator(
                             fieldLayout, PoseStrategy.AVERAGE_BEST_TARGETS, photonCamera, VisionConstants.kCameraOffset);
     }
-    
-    // Read https://docs.photonvision.org/en/latest/docs/programming/photonlib/robot-pose-estimator.html
-    // for more information on its returns and usage
+
     /** Estimate robot's field position from AprilTags. Returns the estimted pose (Pose3d) and timestamp of estimation (double) **/
     public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
 		if (photonPoseEstimator == null) {

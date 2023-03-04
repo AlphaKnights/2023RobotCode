@@ -4,8 +4,13 @@
 
 package frc.robot.subsystems;
 
+import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
+
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -16,6 +21,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.util.WPIUtilJNI;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.NetworkTableConstants;
 import frc.utils.SwerveUtils;
@@ -59,6 +66,10 @@ public class DriveSubsystem extends SubsystemBase {
   private NetworkTableEntry m_ySpeedEntry = NetworkTableConstants.kDriveTable.getEntry("ySpeed");
   private NetworkTableEntry m_rotSpeedEntry = NetworkTableConstants.kDriveTable.getEntry("rotSpeed");
   private NetworkTableEntry m_gyroHeadingEntry = NetworkTableConstants.kDriveTable.getEntry("gyroHeading");
+  private NetworkTableEntry m_poseEstimateEntry = NetworkTableConstants.kDriveTable.getEntry("poseEstimateEntry");
+  private Field2d m_field2d = new Field2d();
+  Optional<EstimatedRobotPose> result;
+  public PhotonCameraWrapper pcw;
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
@@ -71,23 +82,35 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
       });
 
+  SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
+      DriveConstants.kDriveKinematics,
+      Rotation2d.fromDegrees(m_gyro.getAngle()),
+      new SwerveModulePosition[] {
+          m_frontLeft.getPosition(),
+          m_frontRight.getPosition(),
+          m_rearLeft.getPosition(),
+          m_rearRight.getPosition()
+      }, new Pose2d());
+
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     //Initialize the network table entries with the default values
-    m_xSpeedEntry.setDouble(0.0);
-    m_ySpeedEntry.setDouble(0.0);
-    m_rotSpeedEntry.setDouble(0.0);
+    m_xSpeedEntry.setDefaultDouble(0.0);
+    m_ySpeedEntry.setDefaultDouble(0.0);
+    m_rotSpeedEntry.setDefaultDouble(0.0);
     // m_rateLimitEntry.setBoolean(false);
-    m_gyroHeadingEntry.setDouble(0.0);
+    m_gyroHeadingEntry.setDefaultDouble(0.0);
     // m_gyro.setAngleAdjustment(-180);
+    pcw = new PhotonCameraWrapper();
+    SmartDashboard.putData(m_field2d);
+    // m_poseEstimateEntry.setDefaultValue(m_field2d);
   }
 
   @Override
-  public void periodic() {
+  public void periodic() { 
     m_gyroHeadingEntry.setDouble(m_gyro.getAngle());
     m_xSpeedEntry.setDouble(m_currentTranslationDir);
     // Update the odometry in the periodic block
-    // System.out.println(getHeading());
     m_odometry.update(
         Rotation2d.fromDegrees(m_gyro.getAngle()),
         new SwerveModulePosition[] {
@@ -96,6 +119,7 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
         });
+    updatePoseEstimate();
   }
 
   /**
@@ -123,6 +147,33 @@ public class DriveSubsystem extends SubsystemBase {
         },
         p_pose);
   }
+
+  public void updatePoseEstimate() {
+    m_poseEstimator.update(
+        Rotation2d.fromDegrees(m_gyro.getAngle()),
+        new SwerveModulePosition[] {
+            m_frontLeft.getPosition(),
+            m_frontRight.getPosition(),
+            m_rearLeft.getPosition(),
+            m_rearRight.getPosition()
+        });
+
+    Optional<EstimatedRobotPose> result =
+            pcw.getEstimatedGlobalPose(m_poseEstimator.getEstimatedPosition());
+
+    if (result.isPresent()) {
+        EstimatedRobotPose camPose = result.get();
+        m_poseEstimator.addVisionMeasurement(
+                camPose.estimatedPose.toPose2d(), camPose.timestampSeconds);
+        m_field2d.getObject("Cam Est Pos").setPose(camPose.estimatedPose.toPose2d());
+    } else {
+        // move it way off the screen to make it disappear
+        m_field2d.getObject("Cam Est Pos").setPose(new Pose2d(-100, -100, new Rotation2d()));
+    }
+
+    m_field2d.getObject("Actual Pos").setPose(m_odometry.getPoseMeters());
+    m_field2d.setRobotPose(m_poseEstimator.getEstimatedPosition());
+}
 
   /**
    * Method to drive the robot using joystick info.

@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticHub;
@@ -11,6 +12,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PneumaticConstants;
+import frc.robot.Constants.NetworkTableConstants;
 import frc.robot.Constants.PistonState;
 
 public class PneumaticsSubsystem extends SubsystemBase {
@@ -19,29 +21,19 @@ public class PneumaticsSubsystem extends SubsystemBase {
   DoubleSolenoid clawPiston = new DoubleSolenoid(PneumaticConstants.kRevPneumaticPort, PneumaticsModuleType.REVPH, PneumaticConstants.kClawFwdPort, PneumaticConstants.kClawRevPort);
   DoubleSolenoid wristPiston = new DoubleSolenoid(PneumaticConstants.kRevPneumaticPort, PneumaticsModuleType.REVPH, PneumaticConstants.kWristFwdPort, PneumaticConstants.kWristRevPort);
   //Sets up SmartDashboard for the status of the compressor and the double solenoids
-  private final SendableChooser<PistonState> clawChooser = new SendableChooser<>();
-  private final SendableChooser<PistonState> wristChooser = new SendableChooser<>();
-  private boolean inDebugMode = false;
+  
+  NetworkTableEntry pressureEntry = NetworkTableConstants.kPneumaticTable.getEntry("Pressure");
+  // NetworkTableEntry elevatorIEntry = NetworkTableConstants.kPneumaticTable.getEntry("I");
+  // NetworkTableEntry elevatorDEntry = NetworkTableConstants.kPneumaticTable.getEntry("D");
   /** Creates a new ClawSubsystem. */
   public PneumaticsSubsystem() {
-    //Sets up the SmartDashboard for the pistons
-    clawChooser.setDefaultOption("Open", PistonState.OPEN);
-    clawChooser.addOption("Closed", PistonState.CLOSED);
-    clawChooser.addOption("Off", PistonState.OFF);
-    wristChooser.setDefaultOption("Up", PistonState.OPEN);
-    wristChooser.addOption("Down", PistonState.CLOSED);
-    wristChooser.addOption("Off", PistonState.OFF);
-    inDebugMode = DriverStation.isTest();      disableCompressor();
-
+    pressureEntry.setDefaultDouble(0.0);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if(inDebugMode){
-      setClawState(clawChooser.getSelected());
-      setWristState(wristChooser.getSelected());
-    }
+    pressureEntry.setDouble(pneumaticHub.getPressure(0));
   }
 
   /**

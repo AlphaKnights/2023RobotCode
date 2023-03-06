@@ -108,8 +108,6 @@ public class DriveSubsystem extends SubsystemBase {
   int i = 0;
   @Override
   public void periodic() { 
-    m_gyroHeadingEntry.setDouble(m_gyro.getAngle());
-    m_xSpeedEntry.setDouble(m_currentTranslationDir);
     // Update the odometry in the periodic block
     m_odometry.update(
         Rotation2d.fromDegrees(m_gyro.getAngle()),
@@ -120,14 +118,6 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
         });
     updatePoseEstimate();
-    if(i>50){
-      // System.out.println(m_gyro.isAltitudeValid());
-      // System.out.println(m_gyro.getAltitude());
-      i=0;
-    }
-    else{
-      i++;
-    }
   }
 
   /**
@@ -195,7 +185,6 @@ public class DriveSubsystem extends SubsystemBase {
    * @param rateLimit     Whether to enable rate limiting for smoother control.
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
-    
     double xSpeedCommanded;
     double ySpeedCommanded;
 

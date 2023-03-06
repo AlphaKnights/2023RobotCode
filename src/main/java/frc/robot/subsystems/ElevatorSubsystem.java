@@ -71,10 +71,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     //     i++;
     //   }
     // }
-    elevatorFwdLimit.setBoolean(!forwardLimit.get());
-    elevatorRvsLimit.setBoolean(!reverseLimit.get());
-    elevatorPosition.setDouble(elevatorFalcon.getSelectedSensorPosition()/ElevatorConstants.kSensorCountPerRevolution);
-    elevatorPower.setDouble(elevatorFalcon.getStatorCurrent());
   }
 
   /**
@@ -82,6 +78,10 @@ public class ElevatorSubsystem extends SubsystemBase {
    * @param p_power the power to set the elevator to, between -1 and 1. It will refuse to move in the reverse direction if the limit switch is pressed.
    */
   public void setPower(double p_power) {
+    elevatorFwdLimit.setBoolean(!forwardLimit.get());
+    elevatorRvsLimit.setBoolean(!reverseLimit.get());
+    elevatorPosition.setDouble(elevatorFalcon.getSelectedSensorPosition()/ElevatorConstants.kSensorCountPerRevolution);
+    elevatorPower.setDouble(elevatorFalcon.getStatorCurrent());
     if (reverseLimit.get()) {
       // System.out.println("Rev");
       if(p_power<0){

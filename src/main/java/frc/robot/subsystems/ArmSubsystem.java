@@ -70,19 +70,6 @@ public class ArmSubsystem extends SubsystemBase {
   int j = 1;
   @Override
   public void periodic() {
-    armFwdLimit.setBoolean(ArmFalcon.getStatorCurrent()>ArmConstants.kStallCurrent);
-    armRvsLimit.setBoolean(reverseLimit.get());
-    armPosition.setDouble(ArmFalcon.getSelectedSensorPosition()/ArmConstants.kSensorCountPerRevolution);
-    armPower.setDouble(ArmFalcon.getStatorCurrent());
-    // if(NetworkTableConstants.DEBUG){
-      // if(i>=25){
-      //   i = 1;
-      // }
-      // else{
-      //   i++;
-      // }
-    // }
-
   }
 
   /**
@@ -90,6 +77,10 @@ public class ArmSubsystem extends SubsystemBase {
    * @param p_power the power to set the Arm to, between -1 and 1. It will refuse to move in the reverse direction if the limit switch is pressed.
    */
   public void setPower(double p_power) {
+    armRvsLimit.setBoolean(reverseLimit.get());
+    armFwdLimit.setBoolean(ArmFalcon.getStatorCurrent()>ArmConstants.kStallCurrent);
+    armPosition.setDouble(ArmFalcon.getSelectedSensorPosition()/ArmConstants.kSensorCountPerRevolution);
+    armPower.setDouble(ArmFalcon.getStatorCurrent());
     if (reverseLimit.get()) {
       // System.out.println("Rvs Limit");
       if(p_power>0){

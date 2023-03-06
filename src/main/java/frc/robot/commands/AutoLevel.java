@@ -75,7 +75,7 @@ public class AutoLevel extends CommandBase {
             System.out.println("on");
           }
         else{
-            m_driveSubsystem.drive(MathUtil.clamp(Math.abs(-.25*(navX.getPitch())/navX.getPitch()), -.2, .2),0, 0, true, false);
+            m_driveSubsystem.drive(navX.getPitch()/Math.abs(navX.getPitch())*0.1,0, 0, true, false);
             System.out.println("fwd2");
           }
     }

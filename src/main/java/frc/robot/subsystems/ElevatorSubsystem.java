@@ -42,7 +42,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorPosition.setDefaultDouble(ElevatorConstants.kMaxReverseVerticalRotationCount);
     elevatorPower.setDefaultDouble(0);
 
-    elevatorConfig.forwardSoftLimitEnable = true;
+    elevatorConfig.forwardSoftLimitEnable = false;
     elevatorConfig.reverseSoftLimitEnable = false;
     elevatorConfig.forwardSoftLimitThreshold = m_maxElevatorVerticalPosition;
     elevatorConfig.reverseSoftLimitThreshold = ElevatorConstants.kMaxReverseVerticalRotationCount;

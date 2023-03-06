@@ -13,6 +13,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.NetworkTableConstants;
@@ -46,7 +47,7 @@ public class ArmSubsystem extends SubsystemBase {
     armPower.setDefaultDouble(0);
     ingoreArmFwdLimit.setDefaultBoolean(false);
     powerLimit.setDefaultDouble(ArmConstants.kStallCurrent);
-    ArmConfig.forwardSoftLimitEnable = true;
+    ArmConfig.forwardSoftLimitEnable = false;
     ArmConfig.reverseSoftLimitEnable = false;
     ArmConfig.forwardSoftLimitThreshold = m_maxArmPosition;
     ArmConfig.reverseSoftLimitThreshold = ArmConstants.kReverseRotationCount;
@@ -63,6 +64,7 @@ public class ArmSubsystem extends SubsystemBase {
     ArmFalcon.setNeutralMode(NeutralMode.Brake);
     ArmFalcon.setSelectedSensorPosition(ArmConstants.kReverseRotationCount);
     // ArmFalcon.config
+    SmartDashboard.putBoolean("ResetArm", false);
   }
   int i = 1;
   int j = 1;
@@ -109,6 +111,12 @@ public class ArmSubsystem extends SubsystemBase {
       }
     } else {
      ArmFalcon.set(ControlMode.PercentOutput, p_power);
+    }
+    if(SmartDashboard.getBoolean("ResetArm", false)){
+      ArmFalcon.configForwardSoftLimitEnable(false);
+    }
+    else{
+      ArmFalcon.configForwardSoftLimitEnable(true);
     }
   }
 

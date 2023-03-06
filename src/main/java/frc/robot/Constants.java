@@ -65,7 +65,7 @@ public final class Constants {
   }
 
   public static final class VisionConstants {
-    public static final String kCameraName = "myCamera";
+    public static final String kCameraName = "photoncam";
     public static final Transform3d kCameraOffset = new Transform3d();
   }
 
@@ -73,7 +73,7 @@ public final class Constants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
     public static final double kMaxSpeedMetersPerSecond = 4.8;//TODO: Find max Speed
-    public static final double kMaxAngularSpeed = .25 * Math.PI; // radians per second
+    public static final double kMaxAngularSpeed = 1.5 * Math.PI; // radians per second
 
     //slew containts to add motion curve
     public static final double kDirectionSlewRate = 1.2; // radians per second
@@ -158,7 +158,7 @@ public final class Constants {
     public static final double kIZone = 0;
 
     public static final double kPeakOutput = 0.5;
-    public static final double kStallCurrent = 10;
+    public static final double kStallCurrent = 20;
   }
 
   public static final class PneumaticConstants{
@@ -173,7 +173,7 @@ public final class Constants {
   }
 
   public static final class BalanceConstants {
-    public static final double fieldAltitude = 0;
+    public static final double fieldAltitude = 6;
     public static final double altitudeError = 1;
   }
 
@@ -249,8 +249,8 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 3;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 3;
+    public static final double kMaxSpeedMetersPerSecond = 1;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 1;
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 

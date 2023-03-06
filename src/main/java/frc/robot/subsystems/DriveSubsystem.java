@@ -105,7 +105,7 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putData(m_field2d);
     // m_poseEstimateEntry.setDefaultValue(m_field2d);
   }
-
+  int i = 0;
   @Override
   public void periodic() { 
     m_gyroHeadingEntry.setDouble(m_gyro.getAngle());
@@ -120,6 +120,14 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
         });
     updatePoseEstimate();
+    if(i>50){
+      // System.out.println(m_gyro.isAltitudeValid());
+      // System.out.println(m_gyro.getAltitude());
+      i=0;
+    }
+    else{
+      i++;
+    }
   }
 
   /**
@@ -167,6 +175,7 @@ public class DriveSubsystem extends SubsystemBase {
                 camPose.estimatedPose.toPose2d(), camPose.timestampSeconds);
         m_field2d.getObject("Cam Est Pos").setPose(camPose.estimatedPose.toPose2d());
     } else {
+        // System.out.println("No res");
         // move it way off the screen to make it disappear
         m_field2d.getObject("Cam Est Pos").setPose(new Pose2d(-100, -100, new Rotation2d()));
     }

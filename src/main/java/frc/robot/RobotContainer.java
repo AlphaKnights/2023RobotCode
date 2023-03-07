@@ -21,6 +21,7 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.PistonState;
 import frc.robot.commands.AutoLevel;
+import frc.robot.commands.AutoZeroCommand;
 import frc.robot.commands.ChangePistonStateCommand;
 import frc.robot.commands.ElevatorGoToPosition;
 import frc.robot.commands.ExtendWristCommand;
@@ -57,6 +58,7 @@ public class RobotContainer {
   //NavX
   private final NavXZeroCommand m_zeroCommand = new NavXZeroCommand(m_robotDrive);
   private final AutoLevel m_autoLevel = new AutoLevel(m_robotDrive);
+  private final AutoZeroCommand m_AutoZeroCommand = new AutoZeroCommand(m_robotDrive);
   //Pneumatics
   private final ChangePistonStateCommand m_offClawStateCommand = new ChangePistonStateCommand(PistonState.OFF, m_pneumaticsSubsystem);
   private final TogglePistonStateCommand m_toggleClawStateCommand = new TogglePistonStateCommand(m_pneumaticsSubsystem);
@@ -192,6 +194,6 @@ public class RobotContainer {
 
     // Run path following command, then stop at the end.
     // return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false)).andThen(m_autoLevel);
-    return m_zeroCommand.andThen(m_autoLevel);
+    return m_AutoZeroCommand;
   }
 }

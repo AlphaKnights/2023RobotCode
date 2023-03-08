@@ -65,15 +65,15 @@ public final class Constants {
   }
 
   public static final class VisionConstants {
-    public static final String kCameraName = "photoncam";
+    public static final String kCameraName = "camera";
     public static final Transform3d kCameraOffset = new Transform3d();
   }
 
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 4.8;//TODO: Find max Speed
-    public static final double kMaxAngularSpeed = 1.5 * Math.PI; // radians per second
+    public static final double kMaxSpeedMetersPerSecond = 5.6;//TODO: Find max Speed
+    public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
 
     //slew containts to add motion curve
     public static final double kDirectionSlewRate = 1.2; // radians per second
@@ -93,16 +93,24 @@ public final class Constants {
 
     // Angular offsets of the modules relative to the chassis in degrees 
 
-    public static final double kFrontLeftChassisAngularOffsetDegrees = -101.5;
-    public static final double kFrontRightChassisAngularOffsetDegrees = 124.5;
-    public static final double kBackLeftChassisAngularOffsetDegrees = -51.5;
-    public static final double kBackRightChassisAngularOffsetDegrees = -121;
+    // public static final double kFrontLeftChassisAngularOffsetDegrees = -101.5;
+    // public static final double kFrontRightChassisAngularOffsetDegrees = 124.5;
+    // public static final double kBackLeftChassisAngularOffsetDegrees = -51.5;
+    // public static final double kBackRightChassisAngularOffsetDegrees = -121;
+    // public static final double kFrontLeftChassisAngularOffsetDegrees = 0;
+    // public static final double kFrontRightChassisAngularOffsetDegrees = 0;
+    // public static final double kBackLeftChassisAngularOffsetDegrees = 0;
+    // public static final double kBackRightChassisAngularOffsetDegrees = 0;
 
     // Angular offsets of the modules relative to the chassis in radians
-    public static final double kFrontLeftChassisAngularOffset = kFrontLeftChassisAngularOffsetDegrees*(Math.PI/180);
-    public static final double kFrontRightChassisAngularOffset = kFrontRightChassisAngularOffsetDegrees*(Math.PI/180);
-    public static final double kBackLeftChassisAngularOffset = kBackLeftChassisAngularOffsetDegrees*(Math.PI/180);
-    public static final double kBackRightChassisAngularOffset = kBackRightChassisAngularOffsetDegrees*(Math.PI/180);
+    // public static final double kFrontLeftChassisAngularOffset = kFrontLeftChassisAngularOffsetDegrees*(Math.PI/180);
+    // public static final double kFrontRightChassisAngularOffset = kFrontRightChassisAngularOffsetDegrees*(Math.PI/180);
+    // public static final double kBackLeftChassisAngularOffset = kBackLeftChassisAngularOffsetDegrees*(Math.PI/180);
+    // public static final double kBackRightChassisAngularOffset = kBackRightChassisAngularOffsetDegrees*(Math.PI/180);
+    public static final double kFrontLeftChassisAngularOffset = -Math.PI/2;
+    public static final double kFrontRightChassisAngularOffset = 0;
+    public static final double kBackLeftChassisAngularOffset = Math.PI;
+    public static final double kBackRightChassisAngularOffset = Math.PI/2;
 
     // SPARK MAX CAN IDs
     public static final int kFrontLeftDrivingCanId = 6;
@@ -165,8 +173,8 @@ public final class Constants {
     public static final int kRevPneumaticPort = 2;
     public static final int kClawFwdPort = 0;
     public static final int kClawRevPort = 1;
-    public static final int kWristFwdPort = 3;
-    public static final int kWristRevPort = 4;
+    public static final int kWristFwdPort = 2;
+    public static final int kWristRevPort = 3;
     public static final double kClawMinPressure = 40;
     public static final double kClawMaxPressure = 50;
     public static final int kAnalogSensorPort = 0;

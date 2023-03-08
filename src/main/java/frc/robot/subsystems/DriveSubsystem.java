@@ -7,12 +7,14 @@ package frc.robot.subsystems;
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
+import org.photonvision.estimation.CameraTargetRelation;
 
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -66,10 +68,10 @@ public class DriveSubsystem extends SubsystemBase {
   private NetworkTableEntry m_ySpeedEntry = NetworkTableConstants.kDriveTable.getEntry("ySpeed");
   private NetworkTableEntry m_rotSpeedEntry = NetworkTableConstants.kDriveTable.getEntry("rotSpeed");
   private NetworkTableEntry m_gyroHeadingEntry = NetworkTableConstants.kDriveTable.getEntry("gyroHeading");
-  private NetworkTableEntry m_poseEstimateEntry = NetworkTableConstants.kDriveTable.getEntry("poseEstimateEntry");
+  // private NetworkTableEntry m_poseEstimateEntry = NetworkTableConstants.kDriveTable.getEntry("poseEstimateEntry");
   private Field2d m_field2d = new Field2d();
   Optional<EstimatedRobotPose> result;
-  public PhotonCameraWrapper pcw;
+  public static PhotonCameraWrapper pcw = new PhotonCameraWrapper();
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
@@ -101,7 +103,7 @@ public class DriveSubsystem extends SubsystemBase {
     // m_rateLimitEntry.setBoolean(false);
     m_gyroHeadingEntry.setDefaultDouble(0.0);
     // m_gyro.setAngleAdjustment(-180);
-    pcw = new PhotonCameraWrapper();
+    // pcw = new PhotonCameraWrapper();
     SmartDashboard.putData(m_field2d);
     // m_poseEstimateEntry.setDefaultValue(m_field2d);
   }
@@ -117,7 +119,11 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
         });
-    updatePoseEstimate();
+        if(i>20){
+          updatePoseEstimate(i);
+          i=0;
+        }
+        i++;
   }
 
   /**
@@ -146,7 +152,7 @@ public class DriveSubsystem extends SubsystemBase {
         p_pose);
   }
 
-  public void updatePoseEstimate() {
+  public void updatePoseEstimate(int i) {
     m_poseEstimator.update(
         Rotation2d.fromDegrees(m_gyro.getAngle()),
         new SwerveModulePosition[] {
@@ -155,21 +161,20 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
         });
+    // System.out.println(m_poseEstimator.getEstimatedPosition());
 
     Optional<EstimatedRobotPose> result =
             pcw.getEstimatedGlobalPose(m_poseEstimator.getEstimatedPosition());
-
     if (result.isPresent()) {
         EstimatedRobotPose camPose = result.get();
         m_poseEstimator.addVisionMeasurement(
                 camPose.estimatedPose.toPose2d(), camPose.timestampSeconds);
         m_field2d.getObject("Cam Est Pos").setPose(camPose.estimatedPose.toPose2d());
-    } else {
-        // System.out.println("No res");
-        // move it way off the screen to make it disappear
-        m_field2d.getObject("Cam Est Pos").setPose(new Pose2d(-100, -100, new Rotation2d()));
+        if(i>20){
+          System.out.println(new CameraTargetRelation(new Pose3d(), camPose.estimatedPose).camToTargDistXY);
+        }
     }
-
+    
     m_field2d.getObject("Actual Pos").setPose(m_odometry.getPoseMeters());
     m_field2d.setRobotPose(m_poseEstimator.getEstimatedPosition());
 }

@@ -25,20 +25,14 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.CvSink;
-import edu.wpi.first.cscore.CvSource;
-import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.Constants.NetworkTableConstants;
 import frc.robot.Constants.VisionConstants;
 import java.io.IOException;
 import java.util.Optional;
 
-import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -46,28 +40,36 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 public class PhotonCameraWrapper {
     private PhotonCamera photonCamera;
-    private PhotonPoseEstimator photonPoseEstimator;
+    public static PhotonPoseEstimator photonPoseEstimator;
+    private NetworkTableEntry m_working = NetworkTableConstants.kDriveTable.getEntry("working");
     public PhotonCameraWrapper() {
         // CameraServer
         // Change the name of your camera here to whatever it is in the PhotonVision UI.
-        photonCamera = new PhotonCamera(VisionConstants.kCameraName);
-        
+        // photonCamera = new PhotonCamera(VisionConstants.kCameraName);
         try {
-            // Attempt to load the AprilTagFieldLayout that will tell us where the tags are on the field.
-            AprilTagFieldLayout fieldLayout = AprilTagFields.k2023ChargedUp.loadAprilTagLayoutField();
-            // Create pose estimator
-            photonPoseEstimator =
-                    new PhotonPoseEstimator(
-                            fieldLayout, PoseStrategy.MULTI_TAG_PNP, photonCamera, VisionConstants.kCameraOffset);
-            photonPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-        } catch (IOException e) {
-            // The AprilTagFieldLayout failed to load. We won't be able to estimate poses if we don't know
-            // where the tags are.
-            DriverStation.reportError("Failed to load AprilTagFieldLayout", e.getStackTrace());
-            photonPoseEstimator = null;
-            System.out.println("err");
-            System.err.println("Photon not work");
+            photonCamera = new PhotonCamera(NetworkTableConstants.kNetworkTableInstance, "camera");
+            try {
+                // Attempt to load the AprilTagFieldLayout that will tell us where the tags are on the field.
+                AprilTagFieldLayout fieldLayout = AprilTagFields.k2023ChargedUp.loadAprilTagLayoutField();
+                // Create pose estimator
+                photonPoseEstimator =
+                        new PhotonPoseEstimator(
+                                fieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, photonCamera, VisionConstants.kCameraOffset);
+                System.out.println("Photon Loaded!");
+            } catch (IOException e) {
+                // The AprilTagFieldLayout failed to load. We won't be able to estimate poses if we don't know
+                // where the tags are.
+                DriverStation.reportError("Failed to load AprilTagFieldLayout", e.getStackTrace());
+                photonPoseEstimator = null;
+                System.out.println("err");
+                System.err.println("Photon not work");
+            }
+        } catch (Exception e) {
+            System.out.println("No cam");
+            System.out.println(e);
         }
+        m_working.setDefaultBoolean(false);
+        
     }
 
     /**
@@ -77,10 +79,10 @@ public class PhotonCameraWrapper {
      */
     public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
         if (photonPoseEstimator == null) {
-            // The field layout failed to load, so we cannot estimate poses.
             return Optional.empty();
         }
         photonPoseEstimator.setReferencePose(prevEstimatedRobotPose);
+        // photonPoseEstimator.set
         return photonPoseEstimator.update();
     }
 }

@@ -21,6 +21,7 @@ public class RetractWristCommand extends CommandBase {
   @Override
   public void initialize() {
     m_pneumaticsSubsystem.setWristState(PistonState.CLOSED);
+    System.out.println("Close");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

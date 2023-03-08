@@ -6,10 +6,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PneumaticConstants;
 import frc.robot.Constants.NetworkTableConstants;
@@ -21,19 +19,28 @@ public class PneumaticsSubsystem extends SubsystemBase {
   DoubleSolenoid clawPiston = new DoubleSolenoid(PneumaticConstants.kRevPneumaticPort, PneumaticsModuleType.REVPH, PneumaticConstants.kClawFwdPort, PneumaticConstants.kClawRevPort);
   DoubleSolenoid wristPiston = new DoubleSolenoid(PneumaticConstants.kRevPneumaticPort, PneumaticsModuleType.REVPH, PneumaticConstants.kWristFwdPort, PneumaticConstants.kWristRevPort);
   //Sets up SmartDashboard for the status of the compressor and the double solenoids
-  
+  private double m_minPressure = PneumaticConstants.kClawMinPressure;
+  private double m_maxPressure = PneumaticConstants.kClawMaxPressure;
   NetworkTableEntry pressureEntry = NetworkTableConstants.kPneumaticTable.getEntry("Pressure");
-  // NetworkTableEntry elevatorIEntry = NetworkTableConstants.kPneumaticTable.getEntry("I");
-  // NetworkTableEntry elevatorDEntry = NetworkTableConstants.kPneumaticTable.getEntry("D");
+  NetworkTableEntry clawPositionEntry = NetworkTableConstants.kPneumaticTable.getEntry("ClawPosition");
+  NetworkTableEntry wristPositionEntry = NetworkTableConstants.kPneumaticTable.getEntry("WristPosition");
+  NetworkTableEntry minPressureEntry = NetworkTableConstants.kPneumaticTable.getEntry("MinPressure");
+  NetworkTableEntry maxPressureEntry = NetworkTableConstants.kPneumaticTable.getEntry("MaxPressure");
   /** Creates a new ClawSubsystem. */
   public PneumaticsSubsystem() {
     pressureEntry.setDefaultDouble(0.0);
+    clawPositionEntry.setDefaultString("OFF");
+    wristPositionEntry.setDefaultString("OFF");
+    minPressureEntry.setDefaultDouble(m_minPressure);
+    maxPressureEntry.setDefaultDouble(m_maxPressure);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     pressureEntry.setDouble(pneumaticHub.getPressure(0));
+    clawPositionEntry.setString(getClawState().toString());
+    wristPositionEntry.setString(getWristState().toString());
   }
 
   /**
@@ -133,7 +140,7 @@ public class PneumaticsSubsystem extends SubsystemBase {
     }
     else{
       System.out.println("Enabling!");
-      setCompressorPressure(PneumaticConstants.kClawMinPressure, PneumaticConstants.kClawMaxPressure);
+      setCompressorPressure(minPressureEntry.getDouble(m_minPressure), maxPressureEntry.getDouble(m_maxPressure));
     }
   }
 

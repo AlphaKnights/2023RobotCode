@@ -13,7 +13,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.NetworkTableConstants;
@@ -23,51 +22,47 @@ public class ArmSubsystem extends SubsystemBase {
   TalonFX ArmFalcon = new TalonFX(ArmConstants.kArmFalconID);
   TalonFXConfiguration ArmConfig = new TalonFXConfiguration();
   DigitalInput reverseLimit = new DigitalInput(ArmConstants.kLimitSwitchPort);
-  // DigitalInput forwardLimit = new DigitalInput(ArmConstants.kForwardLimitSwitchPort);
   PIDController ArmPID = new PIDController(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
   private double m_maxArmPosition = ArmConstants.kDefaultMaxFowardRotationCount;
   NetworkTableEntry armPEntry = NetworkTableConstants.kArmTable.getEntry("P");
   NetworkTableEntry armIEntry = NetworkTableConstants.kArmTable.getEntry("I");
   NetworkTableEntry armDEntry = NetworkTableConstants.kArmTable.getEntry("D");
-  NetworkTableEntry armFwdLimit = NetworkTableConstants.kArmTable.getEntry("FwdLimit");
-  NetworkTableEntry armRvsLimit = NetworkTableConstants.kArmTable.getEntry("RvsLimit");
-  NetworkTableEntry armPosition = NetworkTableConstants.kArmTable.getEntry("Position");
-  NetworkTableEntry armPower = NetworkTableConstants.kArmTable.getEntry("Power");
-  NetworkTableEntry ingoreArmFwdLimit = NetworkTableConstants.kArmTable.getEntry("IngoreFwdLimit");
-  NetworkTableEntry powerLimit = NetworkTableConstants.kArmTable.getEntry("PowerLimit");
+  NetworkTableEntry armFwdLimitEntry = NetworkTableConstants.kArmTable.getEntry("FwdLimit");
+  NetworkTableEntry armRvsLimitEntry = NetworkTableConstants.kArmTable.getEntry("RvsLimit");
+  NetworkTableEntry armPositionEntry = NetworkTableConstants.kArmTable.getEntry("Position");
+  NetworkTableEntry armPowerEntry = NetworkTableConstants.kArmTable.getEntry("Power");
+  NetworkTableEntry ingoreArmFwdLimitEntry = NetworkTableConstants.kArmTable.getEntry("IngoreFwdLimit");
+  NetworkTableEntry powerLimitEntry = NetworkTableConstants.kArmTable.getEntry("PowerLimit");
+  NetworkTableEntry ignoreLimitEntry = NetworkTableConstants.kArmTable.getEntry("IgnoreLimit");
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
     armPEntry.setDefaultDouble(ArmConstants.kP);
     armIEntry.setDefaultDouble(ArmConstants.kI);
     armDEntry.setDefaultDouble(ArmConstants.kD);
-    armFwdLimit.setDefaultBoolean(false);
-    armRvsLimit.setDefaultBoolean(false);
-    armPosition.setDefaultDouble(ArmConstants.kReverseRotationCount);
-    armPower.setDefaultDouble(0);
-    ingoreArmFwdLimit.setDefaultBoolean(false);
-    powerLimit.setDefaultDouble(ArmConstants.kStallCurrent);
+    armFwdLimitEntry.setDefaultBoolean(false);
+    armRvsLimitEntry.setDefaultBoolean(false);
+    armPositionEntry.setDefaultDouble(ArmConstants.kReverseRotationCount);
+    armPowerEntry.setDefaultDouble(0);
+    ingoreArmFwdLimitEntry.setDefaultBoolean(false);
+    powerLimitEntry.setDefaultDouble(ArmConstants.kStallCurrent);
+
     ArmConfig.forwardSoftLimitEnable = false;
     ArmConfig.reverseSoftLimitEnable = false;
     ArmConfig.forwardSoftLimitThreshold = m_maxArmPosition;
     ArmConfig.reverseSoftLimitThreshold = ArmConstants.kReverseRotationCount;
-
     ArmConfig.slot0.kP = ArmConstants.kP;
     ArmConfig.slot0.kI = ArmConstants.kI;
     ArmConfig.slot0.kD = ArmConstants.kD;
     ArmConfig.slot0.kF = ArmConstants.kF;
     ArmConfig.slot0.integralZone = ArmConstants.kIZone;
     ArmConfig.slot0.closedLoopPeakOutput = ArmConstants.kPeakOutput;
-    // ArmConfig.slot0.allowableClosedloopError = ArmConstants.kPositionTolerance;
 
     ArmFalcon.configAllSettings(ArmConfig);
     ArmFalcon.setNeutralMode(NeutralMode.Brake);
     ArmFalcon.setSelectedSensorPosition(ArmConstants.kReverseRotationCount);
-    // ArmFalcon.config
-    SmartDashboard.putBoolean("ResetArm", false);
   }
-  int i = 1;
-  int j = 1;
+  
   @Override
   public void periodic() {
   }
@@ -77,10 +72,10 @@ public class ArmSubsystem extends SubsystemBase {
    * @param p_power the power to set the Arm to, between -1 and 1. It will refuse to move in the reverse direction if the limit switch is pressed.
    */
   public void setPower(double p_power) {
-    armRvsLimit.setBoolean(reverseLimit.get());
-    armFwdLimit.setBoolean(ArmFalcon.getStatorCurrent()>ArmConstants.kStallCurrent);
-    armPosition.setDouble(ArmFalcon.getSelectedSensorPosition()/ArmConstants.kSensorCountPerRevolution);
-    armPower.setDouble(ArmFalcon.getStatorCurrent());
+    armRvsLimitEntry.setBoolean(reverseLimit.get());
+    armFwdLimitEntry.setBoolean(ArmFalcon.getStatorCurrent()>ArmConstants.kStallCurrent);
+    armPositionEntry.setDouble(ArmFalcon.getSelectedSensorPosition()/ArmConstants.kSensorCountPerRevolution);
+    armPowerEntry.setDouble(ArmFalcon.getStatorCurrent());
     if (reverseLimit.get()) {
       // System.out.println("Rvs Limit");
       if(p_power>0){
@@ -91,7 +86,7 @@ public class ArmSubsystem extends SubsystemBase {
         ArmFalcon.set(ControlMode.PercentOutput, p_power);
       }
       ArmFalcon.setSelectedSensorPosition(ArmConstants.kReverseRotationCount);
-    } else if (ArmFalcon.getStatorCurrent()>powerLimit.getDouble(ArmConstants.kStallCurrent)&&!ingoreArmFwdLimit.getBoolean(false)){
+    } else if (ArmFalcon.getStatorCurrent()>powerLimitEntry.getDouble(ArmConstants.kStallCurrent)&&!ingoreArmFwdLimitEntry.getBoolean(false)){
       if(p_power<0){
         ArmFalcon.set(ControlMode.PercentOutput, 0);
         m_maxArmPosition = ArmFalcon.getSelectedSensorPosition();
@@ -103,7 +98,7 @@ public class ArmSubsystem extends SubsystemBase {
     } else {
      ArmFalcon.set(ControlMode.PercentOutput, p_power);
     }
-    if(SmartDashboard.getBoolean("ResetArm", false)){
+    if(ignoreLimitEntry.getBoolean(false)){
       ArmFalcon.configForwardSoftLimitEnable(false);
     }
     else{

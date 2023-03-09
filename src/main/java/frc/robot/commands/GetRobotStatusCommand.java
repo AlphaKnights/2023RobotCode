@@ -16,8 +16,8 @@ import frc.robot.Constants.PneumaticConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.MAXSwerveModule;
 import frc.robot.subsystems.PneumaticsSubsystem;
+import frc.utils.MAXSwerveModule;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:

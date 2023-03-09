@@ -89,7 +89,7 @@ public class RobotContainer {
     // Xbox controller button for zero'ing the NavX
     m_zeroButton.onFalse(m_zeroCommand);//Triggers when the button is released
     // Xbox controller button for holding the current position
-    m_holdPosition.whileTrue(m_holdPositionCommand);//Runs while the button is pressed
+    m_holdPosition.toggleOnTrue(m_holdPositionCommand);//Runs while the button is pressed
     //Buttons for claw piston states based on the Operator's Joystick
     m_toggleClawButton.onTrue(m_toggleClawStateCommand);//Triggers when the button is pressed
     m_offClawButton.onTrue(m_offClawStateCommand);//Triggers when the button is pressed

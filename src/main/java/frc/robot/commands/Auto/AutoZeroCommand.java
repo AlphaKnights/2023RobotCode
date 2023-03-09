@@ -26,7 +26,6 @@ public class AutoZeroCommand extends CommandBase {
   public void initialize() {
     t.start();
     m_driveSubsystem.zeroHeading();
-    levelCommand.execute();
   }
 
   
@@ -39,6 +38,7 @@ public class AutoZeroCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    levelCommand.execute();
     t.stop();
   }
 

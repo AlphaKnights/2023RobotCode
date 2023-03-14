@@ -24,9 +24,7 @@
               "_showGlyph": false,
               "Game/Game": "A2023_Charged_Up",
               "Visuals/Robot Icon Size": 50.0,
-              "Visuals/Show Outside Circles": false,
-              "Colors/Actual Pos": "#FFFFFFFF",
-              "Colors/Cam Est Pos": "#FFFFFFFF"
+              "Visuals/Show Outside Circles": false
             }
           },
           "2,0": {
@@ -92,9 +90,7 @@
               "_showGlyph": false,
               "Game/Game": "A2023_Charged_Up",
               "Visuals/Robot Icon Size": 50.0,
-              "Visuals/Show Outside Circles": false,
-              "Colors/Actual Pos": "#FFFFFFFF",
-              "Colors/Cam Est Pos": "#FFFFFFFF"
+              "Visuals/Show Outside Circles": false
             }
           },
           "5,2": {
@@ -165,10 +161,7 @@
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
               "Y-axis/Lower bound": -1.0,
-              "Y-axis/Unit": "ul",
-              "Visible data/SmartDashboard/Field/Cam Est Pos[0]": true,
-              "Visible data/SmartDashboard/Field/Cam Est Pos[1]": true,
-              "Visible data/SmartDashboard/Field/Cam Est Pos[2]": true
+              "Y-axis/Unit": "ul"
             }
           }
         }
@@ -528,7 +521,7 @@
           },
           "2,2": {
             "size": [
-              5,
+              3,
               4
             ],
             "content": {
@@ -567,6 +560,27 @@
               "_title": "Message",
               "_glyph": 148,
               "_showGlyph": false
+            }
+          },
+          "5,2": {
+            "size": [
+              4,
+              3
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_source0": "camera_server://USB Camera 0",
+              "_title": "USB Camera 0",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Crosshair/Show crosshair": true,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": true,
+              "Controls/Rotation": "NONE",
+              "compression": -1.0,
+              "fps": -1,
+              "imageWidth": -1,
+              "imageHeight": -1
             }
           }
         }

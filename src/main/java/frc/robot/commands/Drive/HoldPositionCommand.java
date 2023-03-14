@@ -9,10 +9,10 @@ import frc.robot.subsystems.DriveSubsystem;
 
 public class HoldPositionCommand extends CommandBase {
   DriveSubsystem m_driveSubsystem;
-  private boolean m_isFinished = false;
+  // private boolean m_isFinished = false;
   /** Creates a new HoldPosition. */
-  public HoldPositionCommand(DriveSubsystem m_driveSubsystem) {
-    // m_driveSubsystem = m_driveSubsystem;
+  public HoldPositionCommand(DriveSubsystem p_driveSubsystem) {
+    m_driveSubsystem = p_driveSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_driveSubsystem);
   }
@@ -32,12 +32,13 @@ public class HoldPositionCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_driveSubsystem.stopXFormation();
-    m_isFinished = true;
+    System.out.println("End");
+    // m_isFinished = false;
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_isFinished;
+    return false;
   }
 }

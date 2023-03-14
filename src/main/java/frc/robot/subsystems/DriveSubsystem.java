@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.NetworkTableConstants;
 import frc.utils.MAXSwerveModule;
-import frc.utils.PhotonCameraWrapper;
+// import frc.utils.PhotonCameraWrapper;
 import frc.utils.SwerveUtils;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -73,7 +73,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   private Field2d m_field2d = new Field2d();
   Optional<EstimatedRobotPose> result;
-  public static PhotonCameraWrapper pcw = new PhotonCameraWrapper();
+  // public static PhotonCameraWrapper pcw = new PhotonCameraWrapper();
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
@@ -96,7 +96,7 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
       }, new Pose2d());
 
-  private boolean m_isInXForm = false;
+  public static boolean m_isInXForm = false;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -122,7 +122,7 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
         });
     if (i > 20) {
-      updatePoseEstimate(i);
+      // updatePoseEstimate(i);
       i = 0;
     }
     i++;
@@ -164,7 +164,7 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
         });
 
-    Optional<EstimatedRobotPose> result = pcw.getEstimatedGlobalPose(m_poseEstimator.getEstimatedPosition());
+    // Optional<EstimatedRobotPose> result = pcw.getEstimatedGlobalPose(m_poseEstimator.getEstimatedPosition());
     if (result.isPresent()) {
       EstimatedRobotPose camPose = result.get();
       m_poseEstimator.addVisionMeasurement(

@@ -175,8 +175,8 @@ public final class Constants {
     public static final int kClawRevPort = 1;
     public static final int kWristFwdPort = 2;
     public static final int kWristRevPort = 3;
-    public static final double kClawMinPressure = 40;
-    public static final double kClawMaxPressure = 50;
+    public static final double kClawMinPressure = 80;
+    public static final double kClawMaxPressure = 90;
     public static final int kAnalogSensorPort = 0;
   }
 

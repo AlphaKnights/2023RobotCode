@@ -78,6 +78,7 @@ public class ElevatorSubsystem extends SubsystemBase {
    * @param p_power the power to set the elevator to, between -1 and 1. It will refuse to move in the reverse direction if the limit switch is pressed.
    */
   public void setPower(double p_power) {
+    // System.out.println("p");
     elevatorFwdLimit.setBoolean(!forwardLimit.get());
     elevatorRvsLimit.setBoolean(!reverseLimit.get());
     elevatorPosition.setDouble(elevatorFalcon.getSelectedSensorPosition()/ElevatorConstants.kSensorCountPerRevolution);
@@ -102,12 +103,19 @@ public class ElevatorSubsystem extends SubsystemBase {
       // elevatorFalcon.setSelectedSensorPosition(ElevatorConstants.kFowardVerticalCount);
     } else {
      elevatorFalcon.set(ControlMode.PercentOutput, p_power);
+     if (p_power <0){
+
+     }
     }
   }
 
   public void goToPosition(){
     System.out.println(elevatorPID.calculate(elevatorFalcon.getSelectedSensorPosition()));
   }
+
+  // public double getElvPosition(){
+  //   return elevatorFalcon.getSelectedSensorPosition()/ElevatorConstants.kSensorCountPerRevolution;
+  // }
 
   /**
    * 
@@ -192,5 +200,8 @@ public class ElevatorSubsystem extends SubsystemBase {
    */
   public DigitalInput getLimitSwitch() {
     return reverseLimit;
+  }
+  public DigitalInput getFLimitSwitch(){
+    return forwardLimit;
   }
 }

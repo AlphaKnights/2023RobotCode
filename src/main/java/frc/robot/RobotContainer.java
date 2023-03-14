@@ -4,10 +4,22 @@
 
 package frc.robot;
 
+import java.util.List;
+
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.PistonState;
@@ -15,6 +27,7 @@ import frc.robot.commands.GetRobotStatusCommand;
 import frc.robot.commands.Arm.ExtendWristCommand;
 import frc.robot.commands.Arm.RetractWristCommand;
 import frc.robot.commands.Auto.AutoLevel;
+import frc.robot.commands.Auto.AutoOpen;
 import frc.robot.commands.Auto.AutoZeroCommand;
 import frc.robot.commands.Drive.HoldPositionCommand;
 import frc.robot.commands.Drive.NavXZeroCommand;
@@ -28,6 +41,9 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /*
@@ -61,6 +77,7 @@ public class RobotContainer {
   private final ElevatorGoToPosition elevatorLowPositionCommand = new ElevatorGoToPosition(m_elevatorSubsystem, ElevatorConstants.kElevatorLowPosition);
   private final ElevatorGoToPosition elevatorMidPositionCommand = new ElevatorGoToPosition(m_elevatorSubsystem, ElevatorConstants.kElevatorMidPosition);
   private final ElevatorGoToPosition elevatorHighPositionCommand = new ElevatorGoToPosition(m_elevatorSubsystem, ElevatorConstants.kElevatorHighPosition);
+  private final AutoOpen m_AutoOpen = new AutoOpen(m_pneumaticsSubsystem);
   // private final HomeElevatorCommand homeElevatorCommand = new HomeElevatorCommand(m_elevatorSubsystem);
   // The driver's controller - driver drives the robot
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -82,6 +99,7 @@ public class RobotContainer {
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
+
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
@@ -106,8 +124,8 @@ public class RobotContainer {
     m_elevatorHighButton.toggleOnTrue(elevatorHighPositionCommand);
     m_balanceButton.whileTrue(m_autoLevel);
     // Configure default commands
-    m_elevatorSubsystem.setDefaultCommand(new RunCommand(() -> m_elevatorSubsystem.setPower(m_operatorLeftJoystick.getY()*m_operatorLeftJoystick.getThrottle()), m_elevatorSubsystem));
-    m_armSubsystem.setDefaultCommand(new RunCommand(() -> m_armSubsystem.setPower(m_operatorRightJoystick.getY()*m_operatorRightJoystick.getThrottle()),m_armSubsystem));
+    // m_elevatorSubsystem.setDefaultCommand(new RunCommand(() -> m_elevatorSubsystem.setPower(m_operatorLeftJoystick.getY()*m_operatorLeftJoystick.getThrottle()), m_elevatorSubsystem));
+    // m_armSubsystem.setDefaultCommand(new RunCommand(() -> m_armSubsystem.setPower(m_operatorLeftJoystick.getY()*m_operatorLeftJoystick.getThrottle(), m_operatorLeftJoystick.getThrottle()),m_armSubsystem));
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
@@ -115,8 +133,8 @@ public class RobotContainer {
             () -> m_robotDrive.drive(
                 -MathUtil.applyDeadband(m_driverController.getLeftY()*OIConstants.kJoystickInput, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getLeftX()*OIConstants.kJoystickInput, OIConstants.kDriveDeadband),
-                MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                true, true),
+                -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
+                false, true),
             m_robotDrive));
   }
 
@@ -142,46 +160,50 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+
     // homeElevatorCommand.schedule();
     // Create config for trajectory
-    // TrajectoryConfig config = new TrajectoryConfig(
-    //     AutoConstants.kMaxSpeedMetersPerSecond,
-    //     AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-    //     // Add kinematics to ensure max speed is actually obeyed
-    //     .setKinematics(DriveConstants.kDriveKinematics);
+    TrajectoryConfig config = new TrajectoryConfig(
+        AutoConstants.kMaxSpeedMetersPerSecond,
+        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+        // Add kinematics to ensure max speed is actually obeyed
+        .setKinematics(DriveConstants.kDriveKinematics);
 
-    // // An example trajectory to follow. All units in meters.
-    // Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-    //     // Start at the origin facing the +X direction
-    //     new Pose2d(0, 0, new Rotation2d(0)),
-    //     // Pass through these two interior waypoints, making an 's' curve path
-    //     //List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-    //     List.of(),
-    //     // End 3 meters straight ahead of where we started, facing forward
-    //     new Pose2d(3, 0, new Rotation2d(0)),
-    //     config);
+    // An example trajectory to follow. All units in meters.
+    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+        // Start at the origin facing the +X direction
+        new Pose2d(0, 0, new Rotation2d(0)),
+        // Pass through these two interior waypoints, making an 's' curve path
+        //List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+        List.of(),
+        // End 3 meters straight ahead of where we started, facing forward
+        new Pose2d(4.5, 0, new Rotation2d(0)),
+        config);
 
-    // var thetaController = new ProfiledPIDController(
-    //     AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-    // thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    var thetaController = new ProfiledPIDController(
+        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-    // SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-    //     exampleTrajectory,
-    //     m_robotDrive::getPose, // Functional interface to feed supplier
-    //     DriveConstants.kDriveKinematics,
+    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+        exampleTrajectory,
+        m_robotDrive::getPose, // Functional interface to feed supplier
+        DriveConstants.kDriveKinematics,
 
-    //     // Position controllers
-    //     new PIDController(AutoConstants.kPXController, 0, 0),
-    //     new PIDController(AutoConstants.kPYController, 0, 0),
-    //     thetaController,
-    //     m_robotDrive::setModuleStates,
-    //     m_robotDrive);
+        // Position controllers
+        new PIDController(AutoConstants.kPXController, 0, 0),
+        new PIDController(AutoConstants.kPYController, 0, 0),
+        thetaController,
+        m_robotDrive::setModuleStates,
+        m_robotDrive);
 
-    // // Reset odometry to the starting pose of the trajectory.
-    // m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
+    // Reset odometry to the starting pose of the trajectory.
+    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
-    // return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false)).andThen(m_autoLevel);
-    return m_AutoZeroCommand;
+    //return m_AutoOpen.andThen(swerveControllerCommand);
+    // return new SequentialCommandGroup(m_AutoOpen, new WaitCommand(.5),swerveControllerCommand);//m_autoLevel;
+    return m_AutoOpen.andThen(new WaitCommand(.5)).andThen(swerveControllerCommand);
+    // return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));//.andThen(m_autoLevel);
+    // return m_AutoZeroCommand.andThen(m_autoLevel);
   }
 }

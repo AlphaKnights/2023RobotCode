@@ -34,7 +34,7 @@ public class ArmSubsystem extends SubsystemBase {
   NetworkTableEntry ingoreArmFwdLimitEntry = NetworkTableConstants.kArmTable.getEntry("IngoreFwdLimit");
   NetworkTableEntry powerLimitEntry = NetworkTableConstants.kArmTable.getEntry("PowerLimit");
   NetworkTableEntry ignoreLimitEntry = NetworkTableConstants.kArmTable.getEntry("IgnoreLimit");
-
+  private boolean max = false;
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
     armPEntry.setDefaultDouble(ArmConstants.kP);
@@ -71,38 +71,48 @@ public class ArmSubsystem extends SubsystemBase {
    * 
    * @param p_power the power to set the Arm to, between -1 and 1. It will refuse to move in the reverse direction if the limit switch is pressed.
    */
-  public void setPower(double p_power) {
+  public void setPower(double p_power, double elvPos) {
     armRvsLimitEntry.setBoolean(reverseLimit.get());
     armFwdLimitEntry.setBoolean(ArmFalcon.getStatorCurrent()>ArmConstants.kStallCurrent);
     armPositionEntry.setDouble(ArmFalcon.getSelectedSensorPosition()/ArmConstants.kSensorCountPerRevolution);
     armPowerEntry.setDouble(ArmFalcon.getStatorCurrent());
-    if (reverseLimit.get()) {
+    if (!reverseLimit.get()&&!ingoreArmFwdLimitEntry.getBoolean(false)) {
       // System.out.println("Rvs Limit");
       if(p_power>0){
         // System.out.println("limit two");
         ArmFalcon.set(ControlMode.PercentOutput, 0);
       }
       else{
-        ArmFalcon.set(ControlMode.PercentOutput, p_power);
+         ArmFalcon.set(ControlMode.PercentOutput, p_power);
       }
       ArmFalcon.setSelectedSensorPosition(ArmConstants.kReverseRotationCount);
-    } else if (ArmFalcon.getStatorCurrent()>powerLimitEntry.getDouble(ArmConstants.kStallCurrent)&&!ingoreArmFwdLimitEntry.getBoolean(false)){
-      if(p_power<0){
+    } else if ((ArmFalcon.getStatorCurrent()>powerLimitEntry.getDouble(ArmConstants.kStallCurrent)&&!ingoreArmFwdLimitEntry.getBoolean(false))&&elvPos>(80*2048)){
+      if(p_power<0||max){
         ArmFalcon.set(ControlMode.PercentOutput, 0);
         m_maxArmPosition = ArmFalcon.getSelectedSensorPosition();
-        
+        // max = true;
       }
-      else{
-        ArmFalcon.set(ControlMode.PercentOutput, p_power);
+      else {
+         ArmFalcon.set(ControlMode.PercentOutput, p_power);
+        // max = false;
       }
-    } else {
-     ArmFalcon.set(ControlMode.PercentOutput, p_power);
+    } else if(elvPos>(80*2048)&&ArmFalcon.getSelectedSensorPosition()<(8*2048)){
+      ArmFalcon.set(ControlMode.PercentOutput, p_power);
     }
-    if(ignoreLimitEntry.getBoolean(false)){
-      ArmFalcon.configForwardSoftLimitEnable(false);
+    // else if (elvPos>1 && p_power>0){
+    //   ArmFalcon.set(ControlMode.PercentOutput, 0);
+    // } maximum = 150-elvpos*150/50
+    else if(elvPos>(120*2048)){
+      ArmFalcon.set(ControlMode.PercentOutput, p_power);
     }
     else{
-      ArmFalcon.configForwardSoftLimitEnable(true);
+      ArmFalcon.set(ControlMode.PercentOutput, 0);
+    }
+    if(ignoreLimitEntry.getBoolean(false)){
+      ArmFalcon.configReverseSoftLimitEnable(false);
+    }
+    else{
+      ArmFalcon.configReverseSoftLimitEnable(true);
     }
   }
 
@@ -110,7 +120,7 @@ public class ArmSubsystem extends SubsystemBase {
    * 
    * @param p_position the position to move the Arm to, in encoder counts.
    */
-  public void goToPosition(double p_position) {
+  public void goToPosition(double p_position, double elvPos) {
     ArmPID.setP(armPEntry.getDouble(ArmConstants.kP));
     ArmPID.setI(armIEntry.getDouble(ArmConstants.kI));
     ArmPID.setD(armDEntry.getDouble(ArmConstants.kD));
@@ -126,42 +136,42 @@ public class ArmSubsystem extends SubsystemBase {
     //   setPower(-.5);
     // }
     // ArmFalcon.set(ControlMode.MotionMagic, p_position);
-    setPower(MathUtil.clamp(ArmPID.calculate(ArmFalcon.getSelectedSensorPosition(), p_position*ArmConstants.kF),-1*ArmConstants.kPeakOutput,ArmConstants.kPeakOutput));
+    setPower(MathUtil.clamp(ArmPID.calculate(ArmFalcon.getSelectedSensorPosition(), p_position*ArmConstants.kF),-1*ArmConstants.kPeakOutput,ArmConstants.kPeakOutput), elvPos);
     // ArmFalcon.set(ControlMode.Position, p_position);
   }
 
-  public boolean homeArm(){
-    if(homeArmBottom()){
-      return homeArmTop();
-    }
-    else{
-      return homeArmBottom();
-    }
-  }
+  // public boolean homeArm(){
+  //   if(homeArmBottom()){
+  //     return homeArmTop();
+  //   }
+  //   else{
+  //     return homeArmBottom();
+  //   }
+  // }
 
-  public boolean homeArmBottom(){
-    if(reverseLimit.get()){
-      ArmFalcon.setSelectedSensorPosition(ArmConstants.kReverseRotationCount);
-      setPower(0);
-      return true;
-    }
-    else{
-      setPower(-.5);
-      return false;
-    }
-  }
+  // public boolean homeArmBottom(){
+  //   if(reverseLimit.get()){
+  //     ArmFalcon.setSelectedSensorPosition(ArmConstants.kReverseRotationCount);
+  //     setPower(0, 0);
+  //     return true;
+  //   }
+  //   else{
+  //     setPower(-.5, 0);
+  //     return false;
+  //   }
+  // }
 
-  public boolean homeArmTop(){
-    if(ArmFalcon.getStatorCurrent()>ArmConstants.kStallCurrent){
-      ArmFalcon.configForwardSoftLimitThreshold(ArmFalcon.getSelectedSensorPosition());
-      setPower(0);
-      return true;
-    }
-    else{
-      setPower(.5);
-      return false;
-    }
-  }
+  // public boolean homeArmTop(){
+  //   if(ArmFalcon.getStatorCurrent()>ArmConstants.kStallCurrent){
+  //     ArmFalcon.configForwardSoftLimitThreshold(ArmFalcon.getSelectedSensorPosition());
+  //     setPower(0, 0);
+  //     return true;
+  //   }
+  //   else{
+  //     setPower(.5, 0);
+  //     return false;
+  //   }
+  // }
 
   /**
    * 

@@ -124,8 +124,8 @@ public class RobotContainer {
     m_elevatorHighButton.toggleOnTrue(elevatorHighPositionCommand);
     m_balanceButton.whileTrue(m_autoLevel);
     // Configure default commands
-    // m_elevatorSubsystem.setDefaultCommand(new RunCommand(() -> m_elevatorSubsystem.setPower(m_operatorLeftJoystick.getY()*m_operatorLeftJoystick.getThrottle()), m_elevatorSubsystem));
-    // m_armSubsystem.setDefaultCommand(new RunCommand(() -> m_armSubsystem.setPower(m_operatorLeftJoystick.getY()*m_operatorLeftJoystick.getThrottle(), m_operatorLeftJoystick.getThrottle()),m_armSubsystem));
+    m_elevatorSubsystem.setDefaultCommand(new RunCommand(() -> m_elevatorSubsystem.setPower(m_operatorLeftJoystick.getY()*m_operatorLeftJoystick.getThrottle(), m_armSubsystem), m_elevatorSubsystem));
+    m_armSubsystem.setDefaultCommand(new RunCommand(() -> m_armSubsystem.setPower(m_operatorRightJoystick.getY()*m_operatorRightJoystick.getThrottle(), m_elevatorSubsystem /*m_operatorRightJoystick.getThrottle()*/),m_armSubsystem));
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.

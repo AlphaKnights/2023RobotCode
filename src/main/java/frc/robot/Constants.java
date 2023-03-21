@@ -128,7 +128,7 @@ public final class Constants {
 
   public static final class ElevatorConstants{
     public static final double kSensorCountPerRevolution = 2048;
-    public static final double kDefaultMaxFowardVerticalRotation = 135;// Up
+    public static final double kDefaultMaxFowardVerticalRotation = 160;// Up
     public static final double kDefaultFowardVerticalCount = kDefaultMaxFowardVerticalRotation*kSensorCountPerRevolution;
     public static final double kMaxReverseVerticalRotationCount = 0; //Down, set to 0 as it starts in the fully down state so it starts in pos 0
     public static final int kElevatorFalconID = 3;
@@ -147,7 +147,9 @@ public final class Constants {
     //Rotations for the spool to get to position, max height is 141 rotations
     public static final double kElevatorLowPosition = 25;
     public static final double kElevatorMidPosition = 50;
-    public static final double kElevatorHighPosition = 100;
+    public static final double kElevatorHighPosition = 155;
+
+    public static final double kEncoderTicksPerRotation = 110100;
   }
 
   public static final class ArmConstants{
@@ -167,6 +169,12 @@ public final class Constants {
 
     public static final double kPeakOutput = 0.5;
     public static final double kStallCurrent = 20;
+
+    public static final double maxHorizontalPos = 40; // tune to rotations
+
+    public static final double baseLength = 18.7;
+
+    public static final double kEncoderTicksPerRotation = 110100;
   }
 
   public static final class PneumaticConstants{

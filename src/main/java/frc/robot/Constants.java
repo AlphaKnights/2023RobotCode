@@ -65,14 +65,14 @@ public final class Constants {
   }
 
   public static final class VisionConstants {
-    public static final String kCameraName = "camera";
+    public static final String kCameraName = "photoncam";
     public static final Transform3d kCameraOffset = new Transform3d();
   }
 
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 5.6;//TODO: Find max Speed
+    public static final double kMaxSpeedMetersPerSecond = 4.8;
     public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
 
     //slew containts to add motion curve
@@ -90,23 +90,7 @@ public final class Constants {
         new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
         new Translation2d(-kWheelBase / 2, -kTrackWidth / 2)
         );
-
-    // Angular offsets of the modules relative to the chassis in degrees 
-
-    // public static final double kFrontLeftChassisAngularOffsetDegrees = -101.5;
-    // public static final double kFrontRightChassisAngularOffsetDegrees = 124.5;
-    // public static final double kBackLeftChassisAngularOffsetDegrees = -51.5;
-    // public static final double kBackRightChassisAngularOffsetDegrees = -121;
-    // public static final double kFrontLeftChassisAngularOffsetDegrees = 0;
-    // public static final double kFrontRightChassisAngularOffsetDegrees = 0;
-    // public static final double kBackLeftChassisAngularOffsetDegrees = 0;
-    // public static final double kBackRightChassisAngularOffsetDegrees = 0;
-
-    // Angular offsets of the modules relative to the chassis in radians
-    // public static final double kFrontLeftChassisAngularOffset = kFrontLeftChassisAngularOffsetDegrees*(Math.PI/180);
-    // public static final double kFrontRightChassisAngularOffset = kFrontRightChassisAngularOffsetDegrees*(Math.PI/180);
-    // public static final double kBackLeftChassisAngularOffset = kBackLeftChassisAngularOffsetDegrees*(Math.PI/180);
-    // public static final double kBackRightChassisAngularOffset = kBackRightChassisAngularOffsetDegrees*(Math.PI/180);
+        
     public static final double kFrontLeftChassisAngularOffset = -Math.PI/2;
     public static final double kFrontRightChassisAngularOffset = 0;
     public static final double kBackLeftChassisAngularOffset = Math.PI;

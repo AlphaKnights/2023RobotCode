@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.NetworkTableConstants;
 import frc.utils.MAXSwerveModule;
-// import frc.utils.PhotonCameraWrapper;
+import frc.utils.PhotonCameraWrapper;
 import frc.utils.SwerveUtils;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -73,7 +73,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   private Field2d m_field2d = new Field2d();
   Optional<EstimatedRobotPose> result;
-  // public static PhotonCameraWrapper pcw = new PhotonCameraWrapper();
+  public static PhotonCameraWrapper pcw;
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
@@ -106,6 +106,7 @@ public class DriveSubsystem extends SubsystemBase {
     m_rotSpeedEntry.setDefaultDouble(0.0);
     m_gyroHeadingEntry.setDefaultDouble(0.0);
     SmartDashboard.putData(m_field2d);
+    pcw = new PhotonCameraWrapper();
   }
 
   int i = 0;
@@ -122,7 +123,7 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
         });
     if (i > 20) {
-      // updatePoseEstimate(i);
+      updatePoseEstimate(i);
       i = 0;
     }
     i++;
@@ -164,16 +165,19 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
         });
 
-    // Optional<EstimatedRobotPose> result = pcw.getEstimatedGlobalPose(m_poseEstimator.getEstimatedPosition());
+    Optional<EstimatedRobotPose> result = pcw.getEstimatedGlobalPose(m_poseEstimator.getEstimatedPosition());
     if (result.isPresent()) {
       EstimatedRobotPose camPose = result.get();
       m_poseEstimator.addVisionMeasurement(
           camPose.estimatedPose.toPose2d(), camPose.timestampSeconds);
       m_field2d.getObject("Cam Est Pos").setPose(camPose.estimatedPose.toPose2d());
       if (i > 20) {
-        System.out.println(new CameraTargetRelation(new Pose3d(), camPose.estimatedPose).camToTargDistXY);
+        // System.out.println(camPose.);
       }
     }
+    // else{
+    //   System.out.println("Data Loss");
+    // }
 
     m_field2d.getObject("Actual Pos").setPose(m_odometry.getPoseMeters());
     m_field2d.setRobotPose(m_poseEstimator.getEstimatedPosition());

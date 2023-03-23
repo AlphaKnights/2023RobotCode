@@ -13,8 +13,11 @@ import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.AutoConstants;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -23,6 +26,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * project.
  */
 public class Robot extends TimedRobot {
+  private String m_autoSelected;
+  private final SendableChooser<String> m_chooser = new SendableChooser<>();
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
@@ -32,24 +37,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-  //   new Thread(() -> {
-  //     UsbCamera camera = CameraServer.startAutomaticCapture();
-  //     camera.setResolution(640, 480);
-
-  //     // CvSink cvSink = CameraServer.getVideo();
-  //     // CvSource outputStream = CameraServer.putVideo("Blur", 640, 480);
-
-  //     // Mat source = new Mat();
-  //     // Mat output = new Mat();
-
-  //     // while(!Thread.interrupted()) {
-  //     //     cvSink.grabFrame(source);
-  //     //     Imgproc.cvtColor(source, output, Imgproc.COLOR_BGR2GRAY);
-  //     //     outputStream.putFrame(output);
-  //     // }
-  // }).start();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
+    m_chooser.setDefaultOption("Mobility", AutoConstants.kMobility);
+    m_chooser.addOption("Balance", AutoConstants.kBalance);
+    SmartDashboard.putData("Auto choices", m_chooser);
     m_robotContainer = new RobotContainer();
   }
 
@@ -79,7 +71,9 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autoSelected = m_chooser.getSelected();
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand(m_autoSelected);
+    System.out.println("Auto selected: " + m_autoSelected);
 
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",

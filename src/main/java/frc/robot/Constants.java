@@ -44,6 +44,7 @@ public final class Constants {
     public static final int kResetEncodersButton = 2;
     public static final int kHoldPositionButton = 3;
     public static final int kAutoBalanceButton = 4;
+    public static final int kDriveToggleClawButton = 5;
     //Left Flight Stick
     public static final int kLeftJoystickControllerPort = 1; // Default port for the left flight joystick
     public static final double kLeftJoystickDeadband = 0.05; // Deadband for the left flight joystick
@@ -133,7 +134,7 @@ public final class Constants {
     public static final double kElevatorMidPosition = 50;
     public static final double kElevatorHighPosition = 155;
 
-    public static final double kEncoderTicksPerRotation = 110100;
+    public static final double kEncoderTicksPerRotation = 110100; //should be 100*2048
   }
 
   public static final class ArmConstants{
@@ -158,7 +159,7 @@ public final class Constants {
 
     public static final double baseLength = 18.7;
 
-    public static final double kEncoderTicksPerRotation = 110100;
+    public static final double kEncoderTicksPerRotation = 110100; // should be 64*2048
   }
 
   public static final class PneumaticConstants{
@@ -249,6 +250,8 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
+    public static final String kMobility = "Mobility";
+    public static final String kBalance = "Balance";
     public static final double kMaxSpeedMetersPerSecond = 1;
     public static final double kMaxAccelerationMetersPerSecondSquared = 1;
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
@@ -261,6 +264,14 @@ public final class Constants {
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+  }
+  
+  public static final class AutoBalancerConstants {
+  public static final double fieldSpeed = 0.2;
+  public static final double setAngle = 0;
+  public static final double tolerance = 2;
+  public static final double fieldError = 6;
+  public static final double kP = 1.6;
   }
 
   public static final class DriveMotorConstants {

@@ -16,11 +16,11 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.NetworkTableConstants;
-import frc.robot.subsystems.ElevatorSubsystem;
+// import frc.robot.subsystems.ElevatorSubsystem;
 
 public class ArmSubsystem extends SubsystemBase {
   private double elvPos;
-  //Config the falcon and the limit switches
+  private double extPos;  //Config the falcon and the limit switches
   TalonFX ArmFalcon = new TalonFX(ArmConstants.kArmFalconID);
   TalonFXConfiguration ArmConfig = new TalonFXConfiguration();
   DigitalInput reverseLimit = new DigitalInput(ArmConstants.kLimitSwitchPort);
@@ -76,8 +76,9 @@ public class ArmSubsystem extends SubsystemBase {
    */
   public void setPower(double p_power, ElevatorSubsystem p_ElevatorSubsystem) {
     elvPos = p_ElevatorSubsystem.getPosition()/ArmConstants.kEncoderTicksPerRotation*1.43*Math.PI;
+    extPos = -ArmFalcon.getSelectedSensorPosition()/ArmConstants.kEncoderTicksPerRotation*1.43*Math.PI+41;
     // elvPos = 121*2480;
-    // System.out.println(ArmFalcon.getSelectedSensorPosition() + "  <ext encoder    elv encoder>" + elvPos + "    ignore>    " + p_power);
+    System.out.println(ArmFalcon.getSelectedSensorPosition() + "  <ext encoder    elv encoder>" + elvPos + "    ignore>    " + p_power + "   double check: " + -ArmFalcon.getSelectedSensorPosition()/ArmConstants.kEncoderTicksPerRotation*1.43*Math.PI);
     armRvsLimitEntry.setBoolean(reverseLimit.get());
     armFwdLimitEntry.setBoolean(ArmFalcon.getStatorCurrent()>ArmConstants.kStallCurrent);
     armPositionEntry.setDouble(ArmFalcon.getSelectedSensorPosition()/ArmConstants.kSensorCountPerRevolution);
@@ -92,7 +93,8 @@ public class ArmSubsystem extends SubsystemBase {
          ArmFalcon.set(ControlMode.PercentOutput, p_power);
       }
       ArmFalcon.setSelectedSensorPosition(ArmConstants.kReverseRotationCount);
-    } else if (/*-ArmFalcon.getSelectedSensorPosition()/ArmConstants.kEncoderTicksPerRotation*1.43*Math.PI > Math.sqrt(elvPos * elvPos + ArmConstants.baseLength * ArmConstants.baseLength)*ArmConstants.maxHorizontalPos/ArmConstants.baseLength || */((ArmFalcon.getStatorCurrent()>powerLimitEntry.getDouble(ArmConstants.kStallCurrent)&&!ingoreArmFwdLimitEntry.getBoolean(false))&&elvPos>(80*2048))){
+    } else if (extPos > Math.sqrt(Math.pow(elvPos * (ArmConstants.maxHorizontalPos+30)/ArmConstants.baseLength,2) + Math.pow(ArmConstants.maxHorizontalPos +30,2)) || ((ArmFalcon.getStatorCurrent()>powerLimitEntry.getDouble(ArmConstants.kStallCurrent)&&!ingoreArmFwdLimitEntry.getBoolean(false))&&elvPos>(80*2048))){
+      // System.out.println(-ArmFalcon.getSelectedSensorPosition()/ArmConstants.kEncoderTicksPerRotation*1.43*Math.PI+41 > Math.sqrt(Math.pow(elvPos * (ArmConstants.maxHorizontalPos+30)/ArmConstants.baseLength,2) + ArmConstants.maxHorizontalPos * ArmConstants.maxHorizontalPos));
       if(p_power<0||max){ // tune maxhorizontalpos
         ArmFalcon.set(ControlMode.PercentOutput, 0);
         m_maxArmPosition = ArmFalcon.getSelectedSensorPosition();

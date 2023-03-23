@@ -4,16 +4,16 @@
 
 package frc.robot.commands.Elevator;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+// import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.commands.Arm.ArmMove;
-import frc.robot.subsystems.ArmSubsystem;
+// import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 public class MoveElevator extends CommandBase {
-  private ArmSubsystem m_armSubsystem;
+  // private ArmSubsystem m_armSubsystem;
   private ElevatorSubsystem m_ElevatorSubsystem;
   private Joystick m_operatorRightJoystick;
   private ArmMove m;

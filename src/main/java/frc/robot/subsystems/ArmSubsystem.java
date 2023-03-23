@@ -18,7 +18,7 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.NetworkTableConstants;
 import frc.robot.subsystems.ElevatorSubsystem;
 
-public class ArmSubsystem extends SubsystemBase {
+public class ArmSubsystem extends SubsystemBase { // add either a public static double elvPower or a parameter for SetPower then go to line with -----
   private double elvPos;
   //Config the falcon and the limit switches
   TalonFX ArmFalcon = new TalonFX(ArmConstants.kArmFalconID);
@@ -98,7 +98,7 @@ public class ArmSubsystem extends SubsystemBase {
         m_maxArmPosition = ArmFalcon.getSelectedSensorPosition();
         // max = true;
       }
-      else {
+      else { // ----- add an else if statement that checks if elvPower < 0 and then set ArmFalcon to -elvPower if it's true
          ArmFalcon.set(ControlMode.PercentOutput, p_power);
         // max = false;
       }

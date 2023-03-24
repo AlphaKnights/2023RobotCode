@@ -13,8 +13,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-// import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.NetworkTableConstants;
 
@@ -79,7 +77,7 @@ public class ElevatorSubsystem extends SubsystemBase {
    * 
    * @param p_power the power to set the elevator to, between -1 and 1. It will refuse to move in the reverse direction if the limit switch is pressed.
    */
-  public void setPower(double p_power, ArmSubsystem p_ArmSubsystem) {
+  public void setPower(double p_power, ArmSubsystem p_armSubsystem) {
     // System.out.println("p");
     // System.out.println(elevatorFalcon.getSelectedSensorPosition() + "   lol");
     elevatorFwdLimit.setBoolean(!forwardLimit.get());
@@ -103,11 +101,15 @@ public class ElevatorSubsystem extends SubsystemBase {
       else{
         elevatorFalcon.set(ControlMode.PercentOutput, p_power);
       }
-      elevatorFalcon.setSelectedSensorPosition(ElevatorConstants.kDefaultFowardVerticalCount/*kFowardVerticalCount*/);
+      elevatorFalcon.setSelectedSensorPosition(ElevatorConstants.kDefaultFowardVerticalCount);
     } else {
      elevatorFalcon.set(ControlMode.PercentOutput, p_power);
-     if (p_power <0 && -p_ArmSubsystem.getPosition()/ArmConstants.kEncoderTicksPerRotation*1.43*Math.PI+41 > Math.sqrt(Math.pow(elevatorFalcon.getSelectedSensorPosition()/ArmConstants.kEncoderTicksPerRotation*1.43*Math.PI * (ArmConstants.maxHorizontalPos+30)/ArmConstants.baseLength,2) + Math.pow(ArmConstants.maxHorizontalPos +30,2))/*Math.pow(p_ArmSubsystem.getPosition()/ElevatorConstants.kEncoderTicksPerRotation*1.43*Math.PI, 2)-Math.pow(ArmConstants.maxHorizontalPos/ArmConstants.baseLength*elevatorFalcon.getSelectedSensorPosition()/2048*1.43*Math.PI, 2) >= ArmConstants.maxHorizontalPos*/){
-      p_ArmSubsystem.setPower(p_power/2, this);//maybe change the -p_power/2 to positive or higher power
+     if (p_armSubsystem.getArmDistance() > p_armSubsystem.getMaxArmPosition(elevatorFalcon.getSelectedSensorPosition())){
+      p_armSubsystem.setPower(-p_power/2, this);//maybe change the -p_power/2 to positive or higher power
+     }
+     //.2 = positional tolerance for the arm
+     else if (p_armSubsystem.getArmDistance()-ElevatorConstants.kPositionalTolerance >= p_armSubsystem.getMaxArmPosition(elevatorFalcon.getSelectedSensorPosition())){
+      p_armSubsystem.setPower(0, this);
      }
     }
   }
@@ -188,7 +190,7 @@ public class ElevatorSubsystem extends SubsystemBase {
    * @param p_position the position to move the elevator to, in encoder counts.
    */
   public double getPosition() {
-    return elevatorFalcon.getSelectedSensorPosition();
+    return elevatorFalcon.getSelectedSensorPosition()/ElevatorConstants.kEncoderTicksToInches;
   }
   
   /**

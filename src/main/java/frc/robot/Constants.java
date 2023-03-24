@@ -127,14 +127,15 @@ public final class Constants {
     public static final double kIZone = 0;
 
     public static final double kPeakOutput = 0.2;
-
-    public static final double kPositionTolerance = 0.1;
     //Rotations for the spool to get to position, max height is 141 rotations
+    public static final double kPositionalTolerance = .2;
     public static final double kElevatorLowPosition = 25;
     public static final double kElevatorMidPosition = 50;
     public static final double kElevatorHighPosition = 155;
 
-    public static final double kEncoderTicksPerRotation = 110100; //should be 100*2048
+    public static final double kGearRatio = 100;
+    public static final double kEncoderTicksPerRotation = kGearRatio*kSensorCountPerRevolution; //should be 100*2048
+    public static final double kEncoderTicksToInches = kEncoderTicksPerRotation*1.43*Math.PI;
   }
 
   public static final class ArmConstants{
@@ -159,7 +160,9 @@ public final class Constants {
 
     public static final double baseLength = 18.7;
 
-    public static final double kEncoderTicksPerRotation = 110100; // should be 64*2048
+    public static final double kGearRatio = 64;
+    public static final double kEncoderTicksPerRotation = kGearRatio*kSensorCountPerRevolution; // should be 64*2048
+    public static final double kEncoderTicksToInches = kEncoderTicksPerRotation*1.43*Math.PI;
   }
 
   public static final class PneumaticConstants{
